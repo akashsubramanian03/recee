@@ -1,24 +1,19 @@
 import Navbar from './components/Navbar.jsx'
 import Hero from './components/Hero.jsx'
 import Footer from './components/Footer.jsx'
-import CrtFilters from './components/CrtFilters.jsx'
-import { GradientBackground } from '@/components/ui/bloom-field-gradient'
+import { BloomFieldGradient } from './components/ui/bloom-field-gradient.jsx'
 import './styles/hero.css'
 
 export default function App() {
   return (
     <>
-      {/* Wrapped rather than restyled: GradientBackground sets
-          `position: relative` as an INLINE style, which beats any class, so
-          passing className="backdrop" left it in flow as a fourth grid row
-          and collapsed the layout. The wrapper does the positioning and the
-          component just fills it. */}
+      {/* The animated Bloom Field mesh, fixed behind the page and owning the
+          whole surface — it is the only thing the backdrop is made of. */}
       <div className="backdrop" aria-hidden="true">
-        <GradientBackground />
+        <BloomFieldGradient className="backdrop__field" />
       </div>
 
       <div className="page">
-        <CrtFilters />
         <Navbar />
         <Hero />
         <Footer />

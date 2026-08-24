@@ -1,10 +1,3 @@
-.crt-defs {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-}
-
 /* ============================================================
    Stage — artwork is an absolute layer, copy sits on a
    12-column grid above it. Everything is sized in vh/vw so the
@@ -45,7 +38,7 @@
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: clamp(12px, 1.6vw, 28px);
-  row-gap: var(--space-4);
+  row-gap: var(--space-2);
   padding-inline: var(--page-x);
   align-items: end;
   align-content: end;
@@ -75,46 +68,64 @@
 }
 
 /* ---------- wordmark ---------- */
-/* A grid item spanning columns 3–10: centred by construction, aligned to the
-   same columns as the corner blocks, and separated from the headline by the
-   grid's row-gap. Previously `left:50%; width:min(90%,1420px)` put it at
-   x 69→1307 against a content box of 64→1312 — a near-miss nobody chose —
-   and left nothing at all between its baseline and the headline. */
+/* Sized by CAP HEIGHT, not by box.
+     · Big Shoulders' capHeight/unitsPerEm is 1600/2000 = 0.8, so a cap band
+       of 47.2vh — the reference's figure — needs 47.2/0.8 = 59vh of type.
+     · The second term is the width guard. "RECCE" measures 2.273em of
+       advance width (4546/2000, straight out of the font's hmtx table), and
+       the content box is 100vw − 2·2.9vw = 94.2vw, so 94.2/2.273 = 41.4vw is
+       the largest size that still fits the page margins. Above a ~3:2
+       viewport the height term wins; below it the width term takes over.
+   The string is NOT squeezed into the reference's 40vw block. That needs a
+   0.46 horizontal scale, which halves the vertical stems while leaving the
+   horizontal bars at full thickness — and the reference's stems and bars are
+   near-equal, so it would read as a distorted font rather than a condensed
+   one. Natural width, correct cap height, ~89vw of block. */
 .wordmark {
   position: relative;
   z-index: 1;
-  grid-column: 3 / span 8;
+  grid-column: 1 / -1;
   grid-row: 1;
-  width: 100%;
-  height: auto;
   justify-self: center;
-  /* The viewBox is cropped tight to the letterforms, so the bloom has to be
-     free to spill past it. */
-  overflow: visible;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: min(59vh, 41.4vw);
+  line-height: 0.78;
+  letter-spacing: 0;
+  color: var(--blue);
+  white-space: nowrap;
+  user-select: none;
+  /* No bloom. The letterforms are flat colour with hard edges — a halo at
+     this size spreads far enough to haze the field behind it, and the
+     wordmark reads as out of focus rather than as lit. */
 }
 
 /* ---------- photographic arms ---------- */
 /* Placement is SOLVED from where the composition wants each element, not
-   tuned by hand. Two facts come from sampling each cutout's alpha:
+   tuned by hand. The feature coordinates come from sampling each cutout's
+   alpha channel at its frame edges:
 
-     left  image: cut across x 0–9%, y 0–22%;  camera centre at (68%, 80%)
-     right image: cut across x 79–100%, y 75–100%;  fingertip at (3%, 12%)
+     arm-camera.webp (1200×785, aspect 0.6542)
+       cut against TOP across x 0–9.2%, and LEFT across y 0–21.8%
+       lens tip touches the RIGHT edge at (100%, 85.8%)
+       camera centre (68%, 80%)
+     hand-reach.webp (1100×792, aspect 0.7200)
+       fingertip sits in the TOP-LEFT CORNER at (0.5%, 1.9%) — the earlier
+       (3%, 12%) was wrong, which is why the reach never landed
+       cut against RIGHT across y 74.6–99.9% and BOTTOM across x 78.9–99.9%
 
-   so for a target camera-x of 42vw:  left = 42vw − 0.68·(arm width).
-   The vertical coefficient folds in the image's own aspect (785/1200 and
-   792/1100), which is why the numbers below are not round.
+   Reference targets: camera centre (22vw, 26vh), lens tip 36.6vw,
+   fingertip (69.3vw, 43.9vh). The vertical coefficients fold in each
+   image's own aspect, which is why they are not round numbers.
 
    Two constraints the arithmetic must respect:
-     · each arm's cut region has to fall outside the viewport on at least one
-       axis, or the arm ends in mid-air;
-     · neither arm may reach down into the wordmark band or the corner-block
-       band.
-   Hand-tuned percentages previously left the two arms overlapping by 27px —
-   no gap at all — and the right arm crossing the right corner block. */
+     · each cut region has to fall outside the viewport, or the arm ends in
+       mid-air against a hard straight edge;
+     · neither arm may reach down into the corner-block band (76–87vh). */
 .hand {
   position: absolute;
   line-height: 0;
-  filter: url(#crt-photo) drop-shadow(0 8px 22px rgba(28, 35, 64, 0.1));
+  filter: drop-shadow(0 8px 22px rgba(28, 35, 64, 0.1));
 }
 
 .hand__img {
@@ -124,77 +135,112 @@
   user-select: none;
 }
 
-/* Scanlines ride a mask cut from the photo's own alpha, so the pass is
-   confined to the arm and cannot tint the page around it. */
-.hand__scan {
-  position: absolute;
-  inset: 0;
-  mask-size: 100% 100%;
-  -webkit-mask-size: 100% 100%;
-  mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(10, 15, 30, 0.2) 0 1.5px,
-    transparent 1.5px 4px
-  );
-}
+/* 46vw is solved, not chosen: the lens tip sits 0.32 of the image width
+   right of the camera centre (1.00 − 0.68), and the reference puts them
+   36.6vw and 22vw apart — 14.6/0.32 = 45.6, rounded to 46. That lands the
+   lens tip at (494px, 256px) on a 1344×896 frame against the reference's
+   (492, 258).
 
-/* Camera centre → (30vw, 18vh). Pulling it left seats the forearm in the
-   top-left CORNER: the image's left edge lands at 30vw − 0.68·52vw ≈ −5vw,
-   so the arm bleeds off the left as well as the top and passes behind the
-   "recee" logo instead of beginning mid-canvas. It also means the cut region
-   now clears on both axes rather than only the vertical one. */
+   Both cut edges clear: the image starts at −9.3vw so the top cut (image
+   x 0–9.2%) is entirely off the left edge, and the top of the image is at
+   −10vh so the left cut is off the top as well.
+
+   The arm therefore enters the viewport HIGHER than the reference's, which
+   crosses the left edge at 25–30vh. That cannot be fixed by offsetting: the
+   photographed arm comes in on a steep diagonal from the upper left, and
+   rotating it far enough to enter horizontally would tilt the camera ~26°
+   off level. Camera position wins, arm angle gives way. */
 .hand--left {
-  --arm-w: 52vw;
+  --arm-w: 46vw;
   width: var(--arm-w);
-  left: calc(30vw - 0.68 * var(--arm-w));
-  top: calc(18vh - 0.523 * var(--arm-w));
+  left: calc(22vw - 0.68 * var(--arm-w));
+  top: calc(26vh - 0.5233 * var(--arm-w));
 }
 
-/* Fingertip → (66vw, 13vh). With the lens now at ~40vw the gap opens to
-   roughly 26vw of empty space — the Creation-of-Adam interval, and the
-   focal point of the composition. It stays empty.
-   The height is solved against the camera's so the two read as level, and
-   against the letters so the reaching fingers clear the wordmark's top. */
+/* Fingertip → (69.3vw, 43.9vh), which opens a ~33vw gap to the lens — the
+   Creation-of-Adam interval, and the focal point of the composition. It
+   stays empty; nothing is placed in it.
+
+   The rotation is load-bearing rather than decorative. Unrotated, this arm
+   descends steeply enough to cross the right edge at 67–85vh and run
+   straight through the right corner block. Swinging it −14° about the
+   fingertip — which is why transform-origin is the fingertip, so the reach
+   itself does not move — lifts the crossing to ~63vh, clears the block, and
+   flattens the pointing hand toward the reference's near-horizontal angle.
+   Both cut edges stay comfortably off-screen after the rotation. */
 .hand--right {
-  --arm-w: 50vw;
+  --arm-w: 46vw;
   width: var(--arm-w);
-  right: calc(34vw - 0.97 * var(--arm-w));
-  top: calc(13vh - 0.0864 * var(--arm-w));
+  right: calc(30.7vw - 0.99 * var(--arm-w));
+  top: calc(43.9vh - 0.0144 * var(--arm-w));
+  transform: rotate(-14deg);
+  transform-origin: 0.5% 1.9%;
 }
 
 /* ---------- flanking copy ---------- */
+/* Bracket marks, drawn as two corners rather than a full frame: the eye
+   closes the rectangle itself, and a complete box would read as a UI panel
+   instead of a registration mark. */
+/* Lifted off the row baseline by one step. The corner blocks register
+   against the BUTTON band, not against the caption that hangs below it —
+   bottom-aligned flush to the flow they dropped past the buttons and read as
+   a second footer. */
 .aside {
   color: var(--ink);
-  padding-bottom: var(--space-1);
+  padding: 20px 0 20px 20px;
+  margin-bottom: var(--space-3);
 }
 
-.aside__lead {
-  margin: 0 0 8px;
-  font-family: var(--mono);
-  font-size: clamp(10px, 0.82vw, 13px);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  line-height: 1.5;
-  text-transform: uppercase;
+.aside::before,
+.aside::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  border-left: 2px solid var(--ink);
 }
 
-.aside__tags {
+.aside::before {
+  top: 0;
+  border-top: 2px solid var(--ink);
+}
+
+.aside::after {
+  bottom: 0;
+  border-bottom: 2px solid var(--ink);
+}
+
+.aside--right {
+  padding: 20px 20px 20px 0;
+}
+
+.aside--right::before,
+.aside--right::after {
+  left: auto;
+  right: 0;
+  border-left: 0;
+  border-right: 2px solid var(--ink);
+}
+
+/* One style, not two. The block used to run an uppercase lead over a
+   dot-separated tag line, which made a four-word note look like a heading
+   with a subtitle. */
+.aside__lines {
   margin: 0;
   font-family: var(--mono);
-  font-size: clamp(9px, 0.72vw, 11.5px);
-  letter-spacing: 0.04em;
-  line-height: 1.6;
-  color: var(--ink-soft);
+  font-size: clamp(10px, 0.97vw, 13px);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.45;
 }
 
 /* ---------- centre column ---------- */
 /* Spacing is set per relationship rather than one uniform gap. Headline and
-   tagline are a single unit and sit tight; the CTA needs air before it to
-   register as a separate decision; its caption belongs to it and sits close.
-   A uniform gap made the headline/tagline pair look adrift while the
-   CTA/caption pair looked cramped. */
+   tagline are a single unit and sit tight; the buttons need air before them
+   to register as a separate decision; the caption belongs to them and sits
+   close. A uniform gap made the headline/tagline pair look adrift while the
+   button/caption pair looked cramped. */
 .flow {
   display: flex;
   flex-direction: column;
@@ -204,51 +250,45 @@
 
 .flow__headline {
   margin: 0;
-  font-size: clamp(32px, 4.9vw, 68px);
+  font-size: clamp(30px, 4.2vw, 58px);
   font-weight: 700;
   letter-spacing: -0.035em;
   line-height: 1.02;
   color: var(--ink);
 }
 
+/* One line, so no max-width: a measure limit here would wrap it and break
+   the reference's single-line reading. */
 .flow__sub {
-  margin: var(--space-2) 0 0;
-  max-width: 36ch;
-  font-size: clamp(14px, 1.2vw, 18px);
-  line-height: 1.45;
-  color: #3f4048;
-  text-wrap: balance;
+  margin: var(--space-1) 0 0;
+  font-size: clamp(14px, 1.64vw, 22px);
+  line-height: 1.4;
+  color: var(--ink-soft);
 }
 
-.flow__cta {
-  margin-top: var(--space-3);
+/* Equal width, stacked. The width matches the reference's 331px on a 1344
+   frame; the clamp keeps the pair from collapsing to two stubby pills on a
+   phone or stretching past the centre column on a wide screen. */
+.flow__ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: clamp(260px, 24.6vw, 360px);
+  margin-top: var(--space-2);
+}
+
+.flow__ctas > * {
+  width: 100%;
 }
 
 .flow__note {
   margin: var(--space-2) 0 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: clamp(11px, 0.9vw, 14px);
+  font-size: clamp(11px, 1.04vw, 14px);
   color: var(--ink-soft);
 }
 
-/* ---------- CRT motion ---------- */
-.scanlayer {
-  animation: crt-flicker 7s ease-in-out infinite;
-}
-
-@keyframes crt-flicker {
-  0%, 100% { opacity: 1; }
-  47% { opacity: 0.78; }
-  52% { opacity: 1; }
-  78% { opacity: 0.9; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .scanlayer {
-    animation: none;
-  }
+.flow__dot {
+  margin: 0 0.55em;
 }
 
 /* ---------- responsive ---------- */
@@ -262,32 +302,20 @@
   .flow {
     grid-column: 1 / -1;
   }
-
-  .wordmark {
-    grid-column: 2 / span 10;
-  }
 }
 
 /* Portrait framing.
    Sizing the arms as a percentage of WIDTH breaks on tall viewports: the
    lens and the reaching fingertip drift apart vertically until the gesture
    reads as two unrelated limbs. Both arms are therefore scaled off viewport
-   HEIGHT, and their offsets are solved from where the composition wants
-   them — camera at (48%, 26%), fingertip at (62%, 40%) — rather than being
-   hand-tuned per breakpoint:
+   HEIGHT, and their offsets are solved the same way — the % term resolves
+   against the stage, the vh term against the viewport, so a single rule
+   holds from a 390-wide phone to a 768-wide tablet.
 
-     width  = k · vh
-     left   = targetX% − (camera's x within the image) · k · vh
-     top    = targetY% − (camera's y within the image) · aspect · k · vh
-
-   The % term resolves against the stage, the vh term against the viewport,
-   so a single rule holds from a 390-wide phone to a 768-wide tablet. */
+   The arms must be much smaller here: at 62vh the camera alone was ~131px on
+   a 390px screen, leaving no room between the lens and the reaching fingers.
+   Re-solved targets are camera (26vw, 22vh) and fingertip (74vw, 40vh). */
 @media (max-aspect-ratio: 115/100) {
-  /* Same formulas, re-solved targets. The arms must be much smaller here:
-     at 62vh the camera alone was ~131px on a 390px screen, leaving no room
-     between the lens and the reaching fingers — the gap collapsed to ~1vw.
-     Camera height is also capped by cut clearance (camY < 0.379 · arm width,
-     or the cut edge drops back into frame). */
   .stage {
     --arm-l: 58vh;
     --arm-r: 52vh;
@@ -297,26 +325,18 @@
     --arm-w: var(--arm-l);
     width: var(--arm-w);
     left: calc(26vw - 0.68 * var(--arm-w));
-    top: calc(20vh - 0.523 * var(--arm-w));
+    top: calc(22vh - 0.5233 * var(--arm-w));
   }
 
-  /* The fingertip target is expressed in vh, not vw: tied to viewport width
-     the gap swung from 10vw on a phone to 25vw on a 768 tablet, because the
-     arms scale with height while the target scaled with width. Anchoring it
-     to the arms' own size — lens front + 0.12 · arm width — holds the gap
-     proportional to the artwork at every portrait shape.
-     0.38 = 0.20 (camera centre to lens front) + 0.18 (the gap itself).
-     Landscape opens to ~0.49 of arm width; a phone is simply too narrow to
-     carry that and still hold the hand, so portrait takes the widest gap
-     that keeps the reaching fingers on screen. */
+  /* The fingertip target is anchored to the ARMS' own size — lens tip plus
+     0.18 of the arm width — not to viewport width. Tied to vw the gap swung
+     from 10vw on a phone to 25vw on a 768 tablet, because the arms scale
+     with height while the target scaled with width.
+     0.50 = 0.32 (camera centre to lens tip) + 0.18 (the gap itself). */
   .hand--right {
     --arm-w: var(--arm-r);
     width: var(--arm-w);
-    right: calc(74vw - 0.38 * var(--arm-l) - 0.97 * var(--arm-w));
-    top: calc(20vh - 0.0864 * var(--arm-w));
-  }
-
-  .wordmark {
-    grid-column: 1 / -1;
+    right: calc(74vw - 0.50 * var(--arm-l) - 0.99 * var(--arm-w));
+    top: calc(40vh - 0.0144 * var(--arm-w));
   }
 }
