@@ -1,3 +1,18 @@
+/* Big Shoulders Display 900 sets the wordmark and nothing else.
+   Self-hosted rather than pulled from the Google Fonts CDN: the wordmark is
+   the largest element on the page, and a network hiccup fell it back to the
+   system sans, which is neither condensed nor chamfered — the hero read as a
+   different design entirely. This is the latin subset, 14 kB.
+   `font-display: block` for the same reason: a brief invisible wordmark is
+   better than a flash of the wrong one at 528px. */
+@font-face {
+  font-family: 'Big Shoulders Display';
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url('../assets/big-shoulders-display-900.woff2') format('woff2');
+}
+
 *,
 *::before,
 *::after {
@@ -28,14 +43,24 @@ body {
   line-height: 1.5;
 }
 
-/* Bloom Field gradient, fixed behind everything. Replaces the graph-paper
-   grid: it is a full-bleed backdrop, so it lives outside .page's grid rows
-   and never participates in the no-scroll height calculation. */
+/* ---------- Backdrop ---------- */
+/* Fixed behind everything, outside .page's grid rows, so it never
+   participates in the no-scroll height calculation.
+
+   The colour is no longer CSS: it is the animated Bloom Field mesh in
+   components/ui/bloom-field-gradient.jsx, whose four radial blobs drift on
+   their own paths. This element only positions it. */
 .backdrop {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  background-color: var(--bg);
+}
+
+.backdrop__field {
+  position: absolute;
+  inset: 0;
 }
 
 /* The three rows: nav and footer take their natural height, the stage
@@ -71,15 +96,13 @@ a {
   padding-inline: var(--page-x);
 }
 
-/* Links sit to the RIGHT rather than centred. The camera reaches its
-   highest point across the middle of the nav band, and dark nav text on the
-   camera's near-black body is unreadable — the z-order is correct, the
-   contrast is not. Lowering the camera instead would break the fingertip's
-   relationship to the lens, so the type moves and the artwork keeps the
-   centre. */
+/* Links sit CENTRED. They were pushed right because the camera used to
+   reach its highest point across the middle of the nav band and dark type
+   on the camera's near-black body is unreadable. The camera now sits at
+   26vh, well clear of the nav, so the centre is free again. */
 .nav__logo { grid-column: 1 / span 3; }
-.nav__nav  { grid-column: 6 / span 5; display: flex; justify-content: flex-end; }
-.nav__cta  { grid-column: 11 / span 2; }
+.nav__nav  { grid-column: 4 / span 6; display: flex; justify-content: center; }
+.nav__cta  { grid-column: 10 / span 3; }
 
 .nav__logo {
   justify-self: start;
@@ -107,18 +130,15 @@ a {
   opacity: 0.55;
 }
 
+/* Grid placement only. Everything the pill LOOKS like comes from .gloss
+   and .gloss--sm in buttons.css — this rule owns where it sits, not what
+   it is made of. */
 .nav__cta {
   justify-self: end;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: clamp(14px, 1.05vw, 16px);
-  color: var(--apple-blue);
-  white-space: nowrap;
 }
 
 .nav__cta:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 /* ---------- Footer ---------- */
@@ -128,19 +148,30 @@ a {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: clamp(12px, 1.6vw, 28px);
+  align-items: end;
   padding-inline: var(--page-x);
+  padding-top: clamp(12px, 2vh, 22px);
   padding-bottom: clamp(10px, 1.8vh, 22px);
-  font-size: clamp(11px, 0.85vw, 13px);
-  line-height: 1.55;
-  color: var(--ink-soft);
+  font-size: clamp(11px, 0.98vw, 14px);
+  line-height: 1.5;
+  color: var(--ink);
 }
 
-/* Same columns as the stage, so the closing lines sit under the centre
-   column instead of merely being centred in the viewport. */
-.footer__inner {
-  grid-column: 4 / span 6;
-  text-align: center;
+/* Full-bleed, edge to edge — NOT inset to --page-x. Inset, it reads as an
+   underline beneath the content; run to the edges it reads as the rule that
+   closes the page. */
+.footer::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: var(--hairline);
 }
+
+.footer__note  { grid-column: 1 / span 6; }
+.footer__legal { grid-column: 8 / span 5; justify-self: end; text-align: right; }
 
 .footer p {
   margin: 0;
@@ -154,7 +185,10 @@ a {
   .nav__logo { grid-column: 1 / span 6; }
   .nav__cta  { grid-column: 7 / span 6; }
 
-  .footer__inner {
-    grid-column: 1 / -1;
+  .footer {
+    row-gap: 6px;
   }
+
+  .footer__note  { grid-column: 1 / -1; }
+  .footer__legal { grid-column: 1 / -1; justify-self: start; text-align: left; }
 }

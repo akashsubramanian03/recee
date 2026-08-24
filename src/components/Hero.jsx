@@ -2,24 +2,6 @@ import Wordmark from './Wordmark.jsx'
 import Hands from './Hands.jsx'
 import GlossyButton from './GlossyButton.jsx'
 
-const PeopleIcon = () => (
-  <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-    <circle cx="7.5" cy="6" r="2.6" stroke="currentColor" strokeWidth="1.4" />
-    <path
-      d="M2.6 15.4c0-2.5 2.2-4.2 4.9-4.2s4.9 1.7 4.9 4.2"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinecap="round"
-    />
-    <path
-      d="M13.6 4.1a2.6 2.6 0 0 1 0 5M14.6 11.5c2.1.3 3.6 1.9 3.6 3.9"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinecap="round"
-    />
-  </svg>
-)
-
 /**
  * One non-scrolling viewport. The artwork is an absolutely-positioned layer;
  * the copy sits on a 12-column grid over it.
@@ -29,13 +11,14 @@ const PeopleIcon = () => (
  * all three text blocks are items on one 12-column grid, so their alignment
  * and separation are structural rather than tuned.
  *
- * The gap between the lens and the reaching fingertip is the focal point and
- * is deliberately left empty — nothing is placed in it.
+ * The arms now cross the wordmark rather than sitting above it — the lens
+ * overlaps the R, which is what the reference does. That works only because
+ * the arms are z-index 2 and the wordmark z-index 1, ordered against each
+ * other in the shared ancestor context.
  *
- * There is exactly one primary call to action. The nav keeps a persistent
- * "Join Now" link, which is a conventional utility affordance rather than a
- * competing CTA; the mid-hero pill is gone, which also clears the letterforms
- * it used to sit on top of.
+ * Two calls to action, stacked and equal-width: the screening is the primary
+ * decision, the podcast the secondary one. The nav keeps a persistent "Join
+ * Now" pill, which is a utility affordance rather than a third competing CTA.
  */
 export default function Hero() {
   return (
@@ -56,38 +39,42 @@ export default function Hero() {
         <Wordmark />
 
         <aside className="aside aside--left">
-          <p className="aside__lead">
-            Discover films
+          <p className="aside__lines">
+            watch
             <br />
-            that stay with you.
+            together
+            <br />
+            grow together
           </p>
-          <p className="aside__tags">curated . conversations . connections</p>
         </aside>
 
         <div className="flow">
           <h1 className="flow__headline">Celebrate Cinema</h1>
-          <p className="flow__sub">
-            Recee is where film lovers discover, discuss and create together.
-            Be part of the story.
-          </p>
+          <p className="flow__sub">Discover together. Discuss forever.</p>
 
-          <GlossyButton size="lg" className="flow__cta">
-            Join the Club
-          </GlossyButton>
+          {/* Equal-width and stacked, so the pair reads as one decision with
+              a default rather than as two competing buttons side by side. */}
+          <div className="flow__ctas">
+            <GlossyButton size="lg">join the next screening</GlossyButton>
+            <button type="button" className="ghost">
+              listen to the podcast
+            </button>
+          </div>
 
           <p className="flow__note">
-            <PeopleIcon />
-            <span>A community for film lovers, by film lovers.</span>
+            free to join <span className="flow__dot">·</span> new screening
+            every week
           </p>
         </div>
 
         <aside className="aside aside--right">
-          <p className="aside__lead">
-            Create moments
+          <p className="aside__lines">
+            good films
             <br />
-            that last forever.
+            great people
+            <br />
+            real conversations
           </p>
-          <p className="aside__tags">screen . shoot . share . celebrate</p>
         </aside>
       </div>
     </section>

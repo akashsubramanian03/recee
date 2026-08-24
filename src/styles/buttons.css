@@ -1,7 +1,17 @@
 /* ============================================================
-   Aqua glossy pill — brief §5.5 / §8.
-   Deliberately carries ZERO CRT texture: the gloss reads as
-   modern UI, in contrast to the analog artifact behind it.
+   Aqua glossy pill — early-2000s Mac OS X gel button.
+
+   Built from four stacked passes, because the effect is not one
+   gradient:
+
+     1. the base ramp        icy blue-white → break → deep blue
+     2. ::before             the white specular streak, upper third
+     3. ::after              a soft floor bounce along the bottom
+     4. inset box-shadows    the top lip and the bottom rim
+
+   Deliberately carries ZERO texture — no noise, no grain. The
+   whole read is smooth glass, and any grain instantly turns it
+   into plastic.
    ============================================================ */
 
 .gloss {
@@ -11,50 +21,70 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 1px solid rgba(20, 74, 158, 0.75);
+  border: 1px solid var(--aqua-edge);
   border-radius: 999px;
   font-family: var(--sans);
-  font-weight: 500;
+  font-weight: 700;
+  text-transform: lowercase;
   color: #fff;
-  text-shadow: 0 1px 1px rgba(12, 52, 110, 0.45);
+  /* Just enough to hold the white off the pale upper half without
+     reading as an embossed label. */
+  text-shadow: 0 1px 1px rgba(8, 24, 90, 0.5);
   cursor: pointer;
   white-space: nowrap;
-  /* The classic wet-glass break: light icy top, hard step at the
-     midline, saturated blue falling to deep blue at the bottom. */
+  /* The classic wet-glass break: icy top, hard step at the midline,
+     saturated blue falling to deep blue at the bottom edge. */
   background: linear-gradient(
     to bottom,
     var(--aqua-top) 0%,
-    var(--aqua-mid) 45%,
+    var(--aqua-mid) 44%,
     var(--aqua-break) 52%,
     var(--aqua-bottom) 100%
   );
   box-shadow:
-    0 4px 14px rgba(9, 40, 88, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    inset 0 -1px 2px rgba(12, 52, 110, 0.35);
+    /* diffused float, not a hard contact shadow */
+    0 6px 16px var(--aqua-cast),
+    0 1px 2px rgba(9, 30, 120, 0.2),
+    /* the lit top lip */
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    /* light bouncing back up into the underside of the gel. An inset
+       shadow rather than a pseudo-element: any shape placed down there
+       shows its own curved edge through the fill, which reads as a
+       stray oval sitting on the button. */
+    inset 0 -7px 11px -7px rgba(160, 205, 255, 0.75),
+    /* the rim turning away from the light at the bottom */
+    inset 0 -1px 2px rgba(8, 24, 100, 0.45);
   transition:
     transform 0.14s ease,
     box-shadow 0.18s ease,
     filter 0.18s ease;
 }
 
-/* Glossy highlight streak across the top third — light reflecting
-   off curved glass. Inset from the edges so the pill's rim reads
-   as a lip rather than a flat band. */
+/* The specular streak — light reflecting off curved glass across the
+   upper third. Inset from the edges so the pill's rim reads as a lip
+   rather than a flat band, and given an ELLIPTICAL bottom radius so
+   the highlight curves the way a cylinder's does. A straight-sided
+   rectangle here is what makes cheap imitations look like a sticker.
+   z-index:-1 keeps it above the element's own background but below
+   the label; .gloss isolates so that cannot escape the button. */
 .gloss::before {
   content: '';
   position: absolute;
   z-index: -1;
   top: 1px;
-  left: 4%;
-  right: 4%;
-  height: 44%;
+  left: 3.5%;
+  right: 3.5%;
+  height: 42%;
   border-radius: 999px 999px 60% 60% / 999px 999px 22px 22px;
+  /* The ramp reaches zero at 82%, not at 100%. Fading across the full box
+     leaves the shape's own rounded bottom edge faintly visible, and that
+     edge cuts a hard line straight through the label; retiring the alpha
+     early means the streak ends in air and the shape never shows. */
   background: linear-gradient(
     to bottom,
-    rgba(255, 255, 255, 0.92) 0%,
-    rgba(255, 255, 255, 0.62) 55%,
-    rgba(255, 255, 255, 0) 100%
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.46) 52%,
+    rgba(255, 255, 255, 0) 82%
   );
   pointer-events: none;
 }
@@ -66,51 +96,66 @@
 .gloss:active {
   transform: translateY(1px);
   box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.18),
-    inset 0 2px 4px rgba(12, 52, 110, 0.45);
+    0 2px 6px rgba(9, 30, 120, 0.22),
+    inset 0 2px 5px rgba(8, 24, 100, 0.45);
 }
 
 /* Focus ring must survive the gloss — white inner keeps it legible
-   against the deep blue, blue outer against the white page. */
+   against the deep blue, blue outer against the light field. */
 .gloss:focus-visible {
   outline: none;
   box-shadow:
     0 0 0 2px #fff,
     0 0 0 4px var(--apple-blue),
-    0 4px 12px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    0 6px 16px var(--aqua-cast),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 /* ---- sizes ---- */
 .gloss--lg {
-  padding: clamp(11px, 1.5vh, 16px) clamp(34px, 4vw, 62px);
-  font-size: clamp(14px, 1.2vw, 18px);
+  padding: clamp(7px, 1vh, 11px) clamp(24px, 3vw, 44px);
+  font-size: clamp(15px, 1.42vw, 20px);
   letter-spacing: -0.005em;
-  min-height: 44px;
+  min-height: 40px;
+}
+
+/* The nav pill. Smaller, and it keeps its capitals — the reference
+   sets the nav label as "Join Now" while the buttons inside the
+   composition are lowercase. */
+.gloss--sm {
+  padding: 8px 20px;
+  font-size: clamp(14px, 1.05vw, 16px);
+  font-weight: 600;
+  text-transform: none;
+  min-height: 34px;
 }
 
 /* ============================================================
-   Ghost / outline secondary — stays subordinate, no gloss (§8)
+   Outline secondary — no gloss. It stays subordinate by giving up
+   the material, not by shrinking: same silhouette, same size, same
+   weight, so the pair still reads as one decision with a default.
    ============================================================ */
 .ghost {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 13px 28px;
-  border: 1px solid var(--ink);
+  padding: clamp(7px, 1vh, 11px) clamp(24px, 3vw, 44px);
+  border: 2px solid var(--blue-btn);
   border-radius: 999px;
   background: transparent;
-  color: var(--ink);
+  color: var(--blue-btn);
   font-family: var(--sans);
-  font-size: 16px;
-  font-weight: 500;
+  font-size: clamp(15px, 1.42vw, 20px);
+  font-weight: 700;
+  text-transform: lowercase;
   letter-spacing: -0.005em;
+  min-height: 40px;
   cursor: pointer;
   white-space: nowrap;
   transition: background 0.18s ease, color 0.18s ease;
 }
 
 .ghost:hover {
-  background: var(--ink);
+  background: var(--blue-btn);
   color: #fff;
 }
