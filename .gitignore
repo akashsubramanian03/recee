@@ -1,0 +1,9 @@
+node_modules
+dist
+.DS_Store
+*.local
+
+# Raw source art. The app ships the subject-masked WebP cutouts in
+# src/assets/; these 3.4MB originals are unreferenced by the build. Kept out
+# of a public repo deliberately — easy to add, painful to purge from history.
+/ChatGPT Image*.png

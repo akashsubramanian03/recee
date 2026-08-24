@@ -1,0 +1,48 @@
+/* Recee design tokens — brief §11 */
+:root {
+  /* Surface */
+  --bg: #ffffff;
+
+  /* Ink */
+  --ink: #1c2340;          /* wordmark, headline, primary text */
+  /* Darkened from Apple's #6e6e73: that neutral was tuned for a white page
+     and only reaches ~3.5:1 on the Bloom Field backdrop, short of AA for
+     text this small. #585860 measures ~5.2:1 across the gradient. */
+  --ink-soft: #585860;
+  --nav-ink: #1d1d1f;
+  --hairline: #d2d2d7;
+
+  /* Accent — hand rim-light (warm gold, primary accent) */
+  --accent: #cf9c3d;
+  --accent-deep: #a97c25;
+  --accent-alt: #b93b2b;   /* marquee red, held in reserve */
+
+  /* Aqua glossy pill */
+  --aqua-top: #eaf3fc;
+  --aqua-mid: #a8cdf7;
+  --aqua-break: #3d8ef0;
+  --aqua-bottom: #1c5fc4;
+  --aqua-edge: rgba(28, 95, 196, 0.6);
+  /* Likewise darkened — #0071e3 lands at 3.8:1 on the light-blue bloom. */
+  --apple-blue: #005bb8;
+
+  /* Type */
+  --sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+    'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, 'Roboto Mono',
+    monospace;
+
+  /* Rhythm */
+  --nav-h: 66px;
+  --page-x: clamp(24px, 5vw, 80px);
+  --max-w: 1240px;
+
+  /* Vertical scale. Every gap in the hero comes from this ladder so the
+     rhythm is a system rather than a set of independently-tuned clamps —
+     which is how the spacing drifted after the mid-hero CTA was removed. */
+  --space-1: clamp(6px, 0.8vh, 10px);
+  --space-2: clamp(10px, 1.4vh, 16px);
+  --space-3: clamp(18px, 2.6vh, 32px);
+  --space-4: clamp(28px, 4.2vh, 52px);
+  --space-5: clamp(40px, 6vh, 76px);
+}

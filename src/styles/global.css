@@ -1,0 +1,160 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-size-adjust: 100%;
+}
+
+/* The page is a single non-scrolling viewport. Locking overflow on both
+   html and body is what actually stops rubber-banding on macOS/iOS —
+   body alone is not enough. */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.5;
+}
+
+/* Bloom Field gradient, fixed behind everything. Replaces the graph-paper
+   grid: it is a full-bleed backdrop, so it lives outside .page's grid rows
+   and never participates in the no-scroll height calculation. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* The three rows: nav and footer take their natural height, the stage
+   absorbs whatever is left. Nothing can push the page past 100dvh. */
+.page {
+  position: relative;
+  z-index: 1;
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--apple-blue);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- Navbar ---------- */
+.nav {
+  position: relative;
+  z-index: 20;
+  height: var(--nav-h);
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(12px, 1.6vw, 28px);
+  align-items: center;
+  padding-inline: var(--page-x);
+}
+
+/* Links sit to the RIGHT rather than centred. The camera reaches its
+   highest point across the middle of the nav band, and dark nav text on the
+   camera's near-black body is unreadable — the z-order is correct, the
+   contrast is not. Lowering the camera instead would break the fingertip's
+   relationship to the lens, so the type moves and the artwork keeps the
+   centre. */
+.nav__logo { grid-column: 1 / span 3; }
+.nav__nav  { grid-column: 6 / span 5; display: flex; justify-content: flex-end; }
+.nav__cta  { grid-column: 11 / span 2; }
+
+.nav__logo {
+  justify-self: start;
+  font-size: clamp(20px, 1.6vw, 25px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  color: var(--nav-ink);
+}
+
+.nav__links {
+  display: flex;
+  gap: clamp(22px, 3vw, 46px);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: clamp(14px, 1.05vw, 16px);
+  color: var(--nav-ink);
+}
+
+.nav__links a {
+  transition: opacity 0.18s ease;
+}
+
+.nav__links a:hover {
+  opacity: 0.55;
+}
+
+.nav__cta {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: clamp(14px, 1.05vw, 16px);
+  color: var(--apple-blue);
+  white-space: nowrap;
+}
+
+.nav__cta:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  position: relative;
+  z-index: 6;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(12px, 1.6vw, 28px);
+  padding-inline: var(--page-x);
+  padding-bottom: clamp(10px, 1.8vh, 22px);
+  font-size: clamp(11px, 0.85vw, 13px);
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+/* Same columns as the stage, so the closing lines sit under the centre
+   column instead of merely being centred in the viewport. */
+.footer__inner {
+  grid-column: 4 / span 6;
+  text-align: center;
+}
+
+.footer p {
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  .nav__nav {
+    display: none;
+  }
+
+  .nav__logo { grid-column: 1 / span 6; }
+  .nav__cta  { grid-column: 7 / span 6; }
+
+  .footer__inner {
+    grid-column: 1 / -1;
+  }
+}
