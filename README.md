@@ -1,46 +1,77 @@
-# Recee
+# Recce
 
-Landing page for Recee, a cinema club. Single non-scrolling viewport: two arms
-reach toward each other across a RECEE wordmark, a vintage Super 8 camera in one
-hand, the negative space between lens and fingertip as the focal point.
+A film-club landing page in early-2000s Mac OS X Aqua, backed by a small
+Express + Postgres API.
+
+```
+recce/
+├── frontend/    Vite + React. The page.
+└── backend/     Express 5 + node-postgres. The API.
+```
+
+## Running it
+
+Postgres must be running locally. Then, once:
 
 ```bash
 npm install
-npm run dev      # http://localhost:5173
-npm run build
-npm run preview
+createdb recce                 # skip if it exists
+cp backend/.env.example backend/.env   # edit if your Postgres needs a user/password
+npm run db:reset -w recce-backend      # create tables and seed the four bento sets
 ```
 
-Vite + React, no TypeScript or Tailwind. No test suite — this is a static visual
-page, verified by measurement in the browser.
+And to work on it:
 
-## How the hero is built
-
-The arms are photographic cutouts (subject-masked via macOS Vision, shipped as
-WebP). Their placement is **solved, not hand-tuned**: `src/styles/hero.css`
-derives each offset from where the composition wants the element, using geometry
-sampled from each image's alpha channel —
-
-```css
-left: calc(30vw - 0.68 * var(--arm-w));   /* camera-x target */
+```bash
+npm run dev        # API on :3001 and the page on :5173, together
+npm run db:view    # print every table's contents
+npm run db:prune   # delete every member but the newest (--dry to preview)
 ```
 
-Two constraints the arithmetic has to respect: each arm's cut edge must fall
-outside the viewport on at least one axis, or the arm appears to end in mid-air;
-and neither arm may reach into the wordmark or the corner-text bands. Changing an
-arm's width means recomputing its offsets — the comments in `hero.css` carry the
-coefficients.
+### Browsing it in a GUI
 
-Copy and wordmark sit on one 12-column grid shared by nav, stage and footer, so
-alignment and separation are structural rather than tuned.
+TablePlus is installed. New connection → PostgreSQL:
 
-`RECEE` is constructed from rects on a 30-unit module rather than typeset
-(`src/components/Wordmark.jsx`), with a CRT treatment of soft bloom plus a faint
-red/cyan edge fringe.
+| | |
+|---|---|
+| Host | `localhost` |
+| Port | `5432` |
+| User | `akashsubramanian` |
+| Password | *(none — local Homebrew Postgres trusts your macOS user)* |
+| Database | `recce` |
 
-## Layout invariants
+The dev server proxies `/api` to the backend, so the browser only ever talks to
+one origin.
 
-The page must never scroll, at any viewport. Vertical rhythm comes from the
-`--space-*` scale in `src/styles/tokens.css`. Text colours are darkened from
-Apple's neutrals because the gradient backdrop is lighter than a white page —
-every text element measures at or above WCAG AA against it.
+## What the backend holds
+
+| table      | what it is |
+|------------|-----------|
+| `sections` | the nav tabs. `home` is the set the page opens on and has `in_nav = false`, so the nav is a filtered view of this table rather than a hardcoded list. |
+| `panels`   | eight cells per section — four rows, a left and a right. Column ratios are *not* here: those are layout and live in the CSS. |
+| `members`  | join-form signups: name, email, mobile, age, and the film that made them fall in love with cinema. All five required. Unique on `lower(email)`. |
+
+Photos are stored as **keys** (`screen`, `audience`, …), not URLs — Vite
+content-hashes the image files at build time, so there is no stable path for
+the database to hold. `frontend/src/registry.js` is the one place keys are
+resolved to bundled assets.
+
+### Endpoints
+
+| | |
+|---|---|
+| `GET /api/health` | liveness, including a database ping |
+| `GET /api/sections` | the nav tabs, in order |
+| `GET /api/sections/:slug/panels` | one section's eight cells, grouped into rows |
+| `POST /api/members` | join. `422` with per-field errors, `409` if the email is already in |
+| `GET /api/members/count` | how many have joined (never the list itself) |
+
+## The one rule the layout obeys
+
+**The page never scrolls, at any viewport.** Everything is sized in `vh`, and
+that constraint is why the mosaic hides itself behind the join form on a phone —
+the form, four feature rows and the meta row cannot all fit 844px, and of the
+three the mosaic is context rather than task. Desktop shows both.
+
+Changing anything about spacing means re-checking that rule at 1920, 1440, 1280,
+1024, 768, 430, 390 and 360.

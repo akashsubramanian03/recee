@@ -1,0 +1,446 @@
+/* ============================================================
+   Aqua material layer — the shared recipes.
+
+   Everything here is a REUSABLE surface, not a page-specific rule. The page
+   currently mounts a subset of it (.chrome on the navbar, .segmented in the
+   nav, .engrave on the labels); .panel, .gel-badge, .field and .scroll-aqua
+   are the same system written out for the cards, icons, inputs and scrolling
+   regions this page does not have yet. They cost nothing until something
+   uses them, and they mean a card added later cannot invent its own bevel.
+
+   Two rules hold the whole thing together:
+
+   1. ONE LIGHT SOURCE, top-left. Pale highlight on every top edge, shadow on
+      every bottom edge, every gradient running light → dark downward. The
+      page reads as a single lit surface only because nothing breaks this.
+
+   2. TEXTURE IS FOR STRUCTURE ONLY. Grain and pinstripe go on chrome — bars,
+      panel backings, dividers. They never go on a gel button. buttons.css
+      says why and it is right: any grain turns glass into plastic.
+   ============================================================ */
+
+:root {
+  /* Brushed metal grain. Turbulence stretched along x (low x frequency
+     against high y) so the noise reads as fine horizontal brushing rather
+     than as sand. Same inline-SVG technique the backdrop's grain used.
+
+     Opacity is up from 0.55 and the frequency finer: this read correctly
+     inside a 72px toolbar but all but vanished stretched across a whole
+     screen, and the aluminium has to be visibly aluminium. */
+  --brushed: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='b'><feTurbulence type='fractalNoise' baseFrequency='0.014 1.1' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23b)' opacity='0.85'/></svg>");
+
+  /* The second half of the brushing: a hard 3px horizontal rhythm under the
+     turbulence. Noise alone reads as dust; noise over a regular line pitch
+     reads as a surface that was machined in one direction. */
+  --brushed-lines: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.5) 0px,
+    rgba(255, 255, 255, 0.5) 1px,
+    rgba(0, 0, 0, 0.028) 1px,
+    rgba(0, 0, 0, 0.028) 3px
+  );
+
+  /* The pinstripe weave — 1px lit line over a 3px trough, horizontal, the
+     way Aqua's actually ran. Low enough contrast that it reads as a surface
+     finish and never as a set of lines. */
+  --pinstripe-weave: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.55) 0px,
+    rgba(255, 255, 255, 0.55) 1px,
+    var(--pinstripe) 1px,
+    var(--pinstripe) 4px
+  );
+}
+
+/* ---------- brushed-metal chrome ---------- */
+/* A structural bar: the Unified toolbar look. Opaque, because the point of
+   chrome is that it sits IN FRONT of the content — anything passing under it
+   should be occluded rather than showing through.
+
+   `isolation` keeps the grain pseudo-element's negative z-index trapped
+   inside the bar; without it the grain would escape and paint behind the
+   page's other layers. */
+.chrome {
+  position: relative;
+  isolation: isolate;
+  /* The ramp runs the FULL platinum scale, #fdfdfd down to below --plat-400.
+     A narrow ramp made the bar the same value as the desktop under it and the
+     whole toolbar disappeared: chrome only reads as chrome when it is visibly
+     a different material from the surface it sits on, not merely a different
+     shade. */
+  background: linear-gradient(
+    to bottom,
+    #fdfdfd 0%,
+    var(--plat-200) 46%,
+    var(--plat-300) 54%,
+    #c6c6c6 100%
+  );
+  /* The hard line first, then the soft fall beneath it. Both are needed: the
+     line is the bar's physical edge, the shadow is the gap between the bar
+     and whatever it floats over. */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.38);
+  box-shadow:
+    inset 0 1px 0 var(--bevel-light),
+    inset 0 -2px 0 rgba(255, 255, 255, 0.45),
+    0 1px 4px rgba(0, 0, 0, 0.22),
+    0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.chrome::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--brushed);
+  background-size: 160px 160px;
+  mix-blend-mode: overlay;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* Pinstripe instead of brushing — same bar, different finish. */
+.chrome--pinstripe::after {
+  background-image: var(--pinstripe-weave);
+  background-size: auto;
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+
+/* A pinstriped hairline. Replaces a flat 1px rule where a divider wants to
+   read as a woven seam rather than as a drawn line. */
+.pinstripe-rule {
+  height: 4px;
+  background-image: var(--pinstripe-weave);
+  border-top: 1px solid rgba(0, 0, 0, 0.11);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.75);
+}
+
+/* ---------- glass panel ---------- */
+/* An Aqua window pane. The bevel is asymmetric on purpose — light border on
+   top, dark on the bottom — which is what makes a flat rectangle read as a
+   physical object rather than as a modern card with a border.
+   Ready for cards; nothing on the page uses it yet. */
+.panel {
+  position: relative;
+  border-radius: 10px;
+  /* Bottom stop lifted three steps off --plat-300 for the same reason as the
+     chip: the bento headings are blue text on this surface and have to clear
+     4.5:1 at its darkest point, not just at its middle. */
+  background: linear-gradient(
+    to bottom,
+    #fdfdfd 0%,
+    var(--plat-200) 55%,
+    #dfdfdf 100%
+  );
+  border: 1px solid rgba(0, 0, 0, 0.13);
+  border-top-color: rgba(255, 255, 255, 0.95);
+  border-bottom-color: var(--bevel-dark);
+  box-shadow:
+    inset 0 1px 0 var(--bevel-light),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.5),
+    0 1px 3px rgba(0, 0, 0, 0.13),
+    0 10px 26px rgba(0, 0, 0, 0.13);
+}
+
+/* ---------- segmented control ---------- */
+/* Mac OS X's row of joined tabs. It is ONE control with dividers, not a row
+   of separate buttons: the outer radius and the 1px seams between segments
+   are what carry that, so the border lives on the container and the segments
+   themselves only draw their own fill. */
+.segmented {
+  display: inline-flex;
+  align-items: stretch;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--plat-edge);
+  border-radius: 999px;
+  overflow: hidden;
+  background: linear-gradient(
+    to bottom,
+    #ffffff 0%,
+    var(--plat-200) 48%,
+    var(--plat-300) 52%,
+    var(--plat-400) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 var(--bevel-light),
+    0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.segmented > li {
+  display: flex;
+}
+
+/* Two-tone seam — dark line plus a light one beside it — so the divider
+   reads as a groove between two raised segments rather than as a drawn rule. */
+.segmented > li + li {
+  border-left: 1px solid rgba(0, 0, 0, 0.22);
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.7);
+}
+
+.segmented__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* These five lines exist because the item is a <button>, not an <a>. A
+     button arrives with the browser's own chrome — grey fill, 3D border, and
+     the system UI font instead of the page's — and none of it is inherited
+     away. The rule was written for anchors and had to be told. */
+  appearance: none;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0 clamp(12px, 1.5vw, 20px);
+  font-size: clamp(12px, 0.95vw, 14px);
+  font-weight: 600;
+  color: #2b2b2e;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+
+.segmented__item:hover {
+  background: linear-gradient(
+    to bottom,
+    #ffffff 0%,
+    #f4f8ff 48%,
+    #e2ecfb 52%,
+    #cfe0f7 100%
+  );
+}
+
+/* Pressed and selected share the inverted ramp — dark at the top, light at
+   the bottom — which is Aqua's "pushed in" feedback. */
+.segmented__item:active,
+.segmented__item[aria-current='page'] {
+  background: linear-gradient(
+    to bottom,
+    var(--sys-blue-deep) 0%,
+    var(--sys-blue) 55%,
+    var(--sys-blue-lite) 100%
+  );
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.segmented__item:focus-visible {
+  outline: none;
+  box-shadow:
+    inset 0 0 0 2px #fff,
+    inset 0 0 0 3px var(--apple-blue);
+}
+
+/* ---------- engraved labels ---------- */
+/* Aqua's carved-into-metal text: a soft dark shadow ABOVE the glyph and a
+   hard 1px light highlight BELOW it. The highlight has to be hard-edged and
+   the shadow soft — reverse them and the text reads as embossed (standing
+   proud) instead of engraved (cut in). */
+.engrave {
+  text-shadow:
+    0 -1px 1px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* The same effect for light type on a dark ground, where the highlight and
+   the shadow have to swap to stay physically consistent. */
+.engrave--dark {
+  text-shadow:
+    0 -1px 1px rgba(0, 0, 0, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+/* ---------- candy icon badge ---------- */
+/* A circular gel chip for an icon to sit in — same highlight-streak logic as
+   the buttons, drawn as a radial rather than a linear because the surface it
+   models is a dome rather than a cylinder.
+   Ready for icons; nothing on the page uses it yet. */
+.gel-badge {
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  place-items: center;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  border: 1px solid var(--aqua-edge);
+  color: #fff;
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(to bottom, var(--aqua-mid) 0%, var(--aqua-break) 52%, var(--aqua-bottom) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -5px 8px -5px rgba(160, 205, 255, 0.75),
+    0 2px 6px var(--aqua-cast);
+}
+
+/* ---------- form field ---------- */
+/* An inset well — the one place the light source inverts, because a recess is
+   lit on its BOTTOM inner edge and shadowed on its top. That inversion is the
+   whole reason a field reads as carved into the surface while a button reads
+   as sitting on top of it.
+   Ready for forms; nothing on the page uses it yet. */
+.field {
+  appearance: none;
+  padding: 6px 10px;
+  border: 1px solid #9a9a9a;
+  border-top-color: #7d7d7d;
+  border-radius: 5px;
+  background: linear-gradient(to bottom, #f0f0f0 0%, #ffffff 22%, #ffffff 100%);
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink);
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.18);
+}
+
+/* The glowing blue halo Mac OS X put around a focused field. The 1px solid
+   ring inside the glow is not decoration: a soft glow on its own does not
+   meet the contrast requirement for a visible focus indicator, and the halo
+   alone disappears entirely in forced-colors mode. */
+.field:focus-visible {
+  outline: none;
+  border-color: var(--apple-blue);
+  box-shadow:
+    inset 0 2px 3px rgba(0, 0, 0, 0.12),
+    0 0 0 1px var(--apple-blue),
+    0 0 0 4px var(--focus-glow),
+    0 0 8px 4px var(--focus-glow);
+}
+
+/* ---------- Aqua scrollbar ---------- */
+/* Scoped to a class rather than applied globally: this page never scrolls,
+   and styling the root scrollbar of a document that has none is dead weight.
+   Put .scroll-aqua on any overflowing region added later. */
+.scroll-aqua::-webkit-scrollbar {
+  width: 15px;
+  height: 15px;
+}
+
+.scroll-aqua::-webkit-scrollbar-track {
+  background-image: var(--pinstripe-weave);
+  border-left: 1px solid var(--plat-edge);
+}
+
+.scroll-aqua::-webkit-scrollbar-thumb {
+  border: 1px solid var(--aqua-edge);
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--aqua-mid) 0%,
+    var(--aqua-break) 52%,
+    var(--aqua-bottom) 100%
+  );
+  box-shadow:
+    inset 1px 0 0 rgba(255, 255, 255, 0.85),
+    inset -1px 0 2px rgba(8, 24, 100, 0.4);
+}
+
+.scroll-aqua {
+  scrollbar-color: var(--sys-blue) var(--plat-300);
+}
+
+/* ---------- chip badge ---------- */
+/* The small glossy capsule holding a bold blue label. Same gel logic as a
+   button but pale and inert — it is a category tag, not a control, so it gets
+   no hover, no pressed state and no cursor change. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 5px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.22);
+  border-radius: 999px;
+  /* The ramp stops at #dfdfdf rather than running down to --plat-400: the
+     label is small blue text ON this gradient, and #1c5fc4 needs the darkest
+     point of its own background to stay above 4.5:1. Costs a little bevel
+     depth, and the capsule still travels 32 steps from white. */
+  background: linear-gradient(
+    to bottom,
+    #ffffff 0%,
+    var(--plat-200) 48%,
+    var(--plat-300) 52%,
+    #dfdfdf 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 1px 2px rgba(0, 0, 0, 0.18);
+  color: var(--blue);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+}
+
+/* ---------- raised label ---------- */
+/* The exact inverse of .engrave. There the highlight sits BELOW the glyph and
+   the shadow above, so the letter reads as cut into the metal; here the
+   highlight sits above and the shadow falls below, so it reads as standing on
+   top of it. Both exist because this page needs both: everything is flush
+   except the headline, which has to lift off the surface to hold the column. */
+.lift {
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85),
+    0 2px 1px rgba(255, 255, 255, 0.4),
+    0 3px 5px rgba(0, 0, 0, 0.3),
+    0 8px 18px rgba(0, 0, 0, 0.16);
+}
+
+/* ---------- photo panel ---------- */
+/* .panel with the clipping an image needs, plus an inset ring that redraws the
+   bevel ON TOP of the photograph. Without the ring the image would cover the
+   panel's own lit top edge and the cell would lose its bevel exactly where the
+   surrounding cells keep theirs. */
+.panel--photo {
+  overflow: hidden;
+  padding: 0;
+  background: #1a1a1c;
+}
+
+.panel--photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.28);
+}
+
+/* A paler gel for badges carrying a blue icon rather than white text. The blue
+   needs something light behind it to stay legible, so this inverts the default
+   badge: pale glass, coloured contents. */
+.gel-badge--pale {
+  border-color: rgba(0, 0, 0, 0.26);
+  color: var(--blue);
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 58%),
+    linear-gradient(to bottom, #ffffff 0%, var(--plat-200) 52%, var(--plat-400) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -4px 7px -4px rgba(255, 255, 255, 0.9),
+    0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Every texture here is decoration layered over a solid colour, so forced
+   colors can drop all of it and lose nothing but the finish. */
+@media (forced-colors: active) {
+  .chrome::after,
+  .pinstripe-rule,
+  .panel--photo::after {
+    display: none;
+  }
+
+  .engrave,
+  .engrave--dark,
+  .lift {
+    text-shadow: none;
+  }
+}

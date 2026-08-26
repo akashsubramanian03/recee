@@ -1,19 +1,19 @@
 {
-  "name": "recee",
+  "name": "recce",
   "private": true,
   "version": "0.1.0",
-  "type": "module",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "dev": "concurrently -n api,web -c blue,magenta \"npm run dev -w recce-backend\" \"npm run dev -w recce-frontend\"",
+    "build": "npm run build -w recce-frontend",
+    "db:reset": "npm run db:reset -w recce-backend",
+    "db:view": "npm run db:view -w recce-backend",
+    "db:prune": "npm run db:prune -w recce-backend --"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.0.7"
+    "concurrently": "^9.2.1"
   }
 }

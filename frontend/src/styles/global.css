@@ -1,0 +1,281 @@
+/* The UI face for everyone who is NOT on a Mac.
+   --sans leads with -apple-system and BlinkMacSystemFont, so macOS resolves
+   to the native system font and never requests this file at all; Windows and
+   Linux fall past both keywords and land here, getting the humanist,
+   large-x-height, early-2000s texture instead of a generic system sans.
+
+   One variable file covering 400–700 rather than two static cuts: the page
+   uses 400, 600 and 700, and three static subsets cost more than the single
+   variable one.
+
+   `swap` rather than `block`: invisible body text is simply unreadable while
+   it waits, and there is no longer a display face on the page whose late
+   arrival would restyle the whole layout. */
+@font-face {
+  font-family: 'Recee UI';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../assets/recee-ui-400-700.woff2') format('woff2');
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-size-adjust: 100%;
+}
+
+/* The page is a single non-scrolling viewport. Locking overflow on both
+   html and body is what actually stops rubber-banding on macOS/iOS —
+   body alone is not enough. */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  /* Denser than the 1.5 this carried as a modern product page. Mac OS X's UI
+     text was compact — 1.5 is web-article leading and reads as a different
+     era than everything else on the page now does. */
+  line-height: 1.35;
+}
+
+/* ---------- Backdrop ---------- */
+/* The brushed-aluminium desktop. Fixed behind everything and outside .page's
+   grid rows, so it never participates in the no-scroll height calculation.
+
+   Three layers, and all three are needed: the machined line pitch, the
+   turbulence that stops the pitch reading as stripes, and a broad radial
+   lightening anchored top-left — the light source the whole page obeys. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--plat-300);
+  background-image: radial-gradient(
+    130% 100% at 18% 0%,
+    #f4f5f7 0%,
+    var(--plat-200) 48%,
+    var(--plat-300) 100%
+  );
+}
+
+.backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--brushed), var(--brushed-lines);
+  background-size: 160px 160px, auto;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+}
+
+/* Two rows now, not three: the toolbar takes its natural height and the body
+   absorbs everything left. The page footer is gone — its content closes the
+   hero panel instead. Nothing can push the page past 100dvh.
+
+   `overflow: hidden` here as well as on html/body is the belt to that
+   braces: the grid's own min-height:auto on a row would otherwise let a tall
+   child expand the row past the 1fr track. */
+.page {
+  position: relative;
+  z-index: 1;
+  height: 100dvh;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+/* ---------- body: hero panel + mosaic ---------- */
+/* The reference's split, measured: the hero column is 45.8% of the content
+   width and the mosaic takes the rest. minmax(0, …) on both tracks is what
+   stops a long word or a wide image from pushing the grid wider than the
+   viewport, which on a page that must never scroll is not cosmetic. */
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 45.8fr) minmax(0, 54.2fr);
+  gap: var(--gap);
+  min-height: 0;
+  padding: var(--gap) var(--page-x) var(--page-x);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Halo plus ring, matching the controls. The ring is what actually satisfies
+   the visible-focus contrast requirement; the glow is the Aqua part.
+
+   It must NOT set border-radius. A universal `:focus-visible` outranks a class
+   like .gel-badge on specificity and loads later, so a radius here silently
+   reshapes every focused element — it was squaring off the round social badges
+   the moment they took focus. `outline` already follows each element's own
+   radius, so there is nothing to set. */
+:focus-visible {
+  outline: 2px solid var(--apple-blue);
+  outline-offset: 3px;
+  box-shadow: 0 0 8px 3px var(--focus-glow);
+}
+
+/* ---------- Navbar ---------- */
+/* An INSET floating bar, not a full-bleed band. The margin on all four sides
+   is the point: aluminium visible around every edge is what makes the toolbar
+   read as an object lying on the desktop rather than as the top of the page.
+   The material itself is .chrome in aqua.css; this rule owns layout only. */
+.nav {
+  position: relative;
+  z-index: 20;
+  margin: var(--gap) var(--page-x) 0;
+  height: var(--nav-h);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(12px, 2vw, 32px);
+  padding-inline: clamp(14px, 1.6vw, 26px);
+}
+
+.nav__logo {
+  /* Placed directly on the toolbar grid now — it used to sit inside a flex
+     wrapper it shared with a bracketed tagline, and with the tagline gone the
+     wrapper was one element holding one element. */
+  justify-self: start;
+  min-width: 0;
+  font-size: clamp(19px, 1.75vw, 28px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  color: var(--nav-ink);
+}
+
+/* The centre track is `auto`, so the segmented control is sized by its own
+   content and the two 1fr tracks either side balance around it. That keeps it
+   optically centred even though the brand and the pill have different widths. */
+.nav__nav {
+  justify-self: center;
+  min-width: 0;
+}
+
+.nav__links {
+  height: clamp(30px, 3.4vh, 38px);
+}
+
+.nav__cta {
+  justify-self: end;
+}
+
+.nav__cta:hover {
+  text-decoration: none;
+}
+
+/* ---------- responsive ---------- */
+/* The segmented control STAYS on mobile — it is the only navigation there now.
+   What goes instead is the Join pill: the hero carries its own button, and at
+   390px the bar cannot hold a logo, three tabs and a capsule without the tabs
+   collapsing to unreadable. Two items, not four. */
+@media (max-width: 900px) {
+  .nav {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(8px, 2vw, 16px);
+  }
+
+  /* `.nav .nav__cta`, not `.nav__cta`. The pill is also a `.gloss`, and
+     buttons.css is imported AFTER this file — so at equal specificity
+     `.gloss { display: inline-flex }` wins and the pill stayed on screen.
+     The descendant selector outranks it. */
+  .nav .nav__cta {
+    display: none;
+  }
+
+  .nav__nav {
+    justify-self: end;
+  }
+
+  /* Tightened to fit three labels — "What We Do" is the one that sets the
+     floor — beside the wordmark in ~338px of bar. */
+  .nav__links {
+    height: clamp(26px, 3.2vh, 34px);
+  }
+
+  .segmented__item {
+    padding: 0 clamp(7px, 2vw, 12px);
+    font-size: clamp(10px, 2.9vw, 13px);
+  }
+
+  /* One column, three stacked regions. The wrapper around the hero and the
+     meta row dissolves here (see .hero-col in hero.css), so .hero and .meta
+     are grid items in their own right and `order` can lift the mosaic between
+     them — hero, mosaic, meta — which is the mobile reference's stacking.
+
+     The reference's own proportions are 272 / 406 / 88 of its 911px, which
+     normalise to 3.09 / 4.61 / 1. These are not those. Measured on a real
+     390x844 phone the mosaic came out 80px richer than it needs while the
+     hero clipped, because the reference is drawn 41px wider and its hero copy
+     therefore wraps a line shorter. The spare has been moved across. */
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 3.75fr) minmax(0, 3.95fr) minmax(0, 1fr);
+  }
+
+  .hero  { order: 1; }
+  .bento { order: 2; }
+  .meta  { order: 3; }
+
+  /* ---- which region mobile shows ----
+     Desktop puts the hero and the mosaic side by side and never consults
+     these. On a phone they are stacked, and stacking all three means none of
+     them gets enough height to be usable — so mobile shows ONE at a time and
+     the nav is what switches between them.
+
+       home      the pitch and its Join button. No mosaic: the landing view is
+                 an invitation, not a directory.
+       section   the chosen section, filling the page. No hero.
+       joining   the form, which needs ~427px where the hero's share of a
+                 390x844 stack is ~306 — measured, the submit button was being
+                 clipped off the bottom and the form could not be completed.
+
+     The meta row stays in all three; it is the page footer. */
+  .body--home .bento,
+  .body--joining .bento {
+    display: none;
+  }
+
+  .body--section .hero {
+    display: none;
+  }
+
+  /* The hero photograph bleeds across the right 54% of the panel, and the
+     form needs that width — six fields at 62% left the longest label with
+     about ten characters. The picture is atmosphere; the form is a task. */
+  .body--joining .hero::after {
+    display: none;
+  }
+
+  .body--home,
+  .body--joining,
+  .body--section {
+    grid-template-rows: minmax(0, 1fr) minmax(0, auto);
+  }
+}
+
+/* The tablet-portrait rule that used to sit here is gone. It rebalanced THREE
+   stacked regions — hero, mosaic and meta — and below 900px there are now only
+   ever two, because mobile shows one content region at a time. Left in place
+   it still declared three tracks and, loading after the .body--* rules at the
+   same specificity, it won: at 768x1024 the hero took 3.1fr of the column and
+   the form's last two fields and its submit button were clipped 268px off the
+   bottom. */

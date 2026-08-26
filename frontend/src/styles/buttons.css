@@ -1,0 +1,444 @@
+/* ============================================================
+   Aqua glossy pill — early-2000s Mac OS X gel button.
+
+   Built from four stacked passes, because the effect is not one
+   gradient:
+
+     1. the base ramp        icy blue-white → break → deep blue
+     2. ::before             the white specular streak, upper third
+     3. ::after              a soft floor bounce along the bottom
+     4. inset box-shadows    the top lip and the bottom rim
+
+   Deliberately carries ZERO texture — no noise, no grain. The
+   whole read is smooth glass, and any grain instantly turns it
+   into plastic. The brushed and pinstriped finishes in aqua.css
+   are for structural chrome and must never reach in here.
+
+   Every colour is a token. This file names no blue of its own,
+   which is why re-pitching the page from electric blue to Mac OS
+   X system blue was four values in tokens.css and nothing here.
+   ============================================================ */
+
+.gloss {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--aqua-edge);
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-weight: 700;
+  text-transform: lowercase;
+  color: #fff;
+  /* Just enough to hold the white off the pale upper half without
+     reading as an embossed label. */
+  text-shadow: 0 1px 1px rgba(8, 24, 90, 0.5);
+  cursor: pointer;
+  white-space: nowrap;
+  /* INVERTED wet glass: deep blue at the top falling to icy blue-white at
+     the bottom edge. This is the arrangement Aqua used for a PRESSED button,
+     used here as the resting state — the light reads as coming from below.
+
+     The icy end is confined to the bottom 30%. That is not a look decision:
+     the label is white and vertically centred, so anything light reaching the
+     middle of the button takes the text with it. Measured across the glyph
+     band (34–66% of the height) white holds 4.58:1 against this ramp; the
+     light-topped ramp it replaced measured 1.23:1 there. */
+  background: linear-gradient(
+    to bottom,
+    var(--aqua-bottom) 0%,
+    var(--aqua-break) 70%,
+    var(--aqua-mid) 93%,
+    var(--aqua-top) 100%
+  );
+  box-shadow:
+    /* diffused float, not a hard contact shadow */
+    0 6px 16px var(--aqua-cast),
+    0 1px 2px rgba(9, 30, 120, 0.2),
+    /* the top is the shadowed side now — a thin lip, then the shade
+       gathering just beneath it */
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 7px 11px -7px rgba(8, 24, 100, 0.5),
+    /* and the bottom is the lit rim */
+    inset 0 -1px 0 rgba(255, 255, 255, 0.95);
+  transition:
+    transform 0.14s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
+}
+
+/* The specular streak — light reflecting off curved glass. It lives on
+   whichever edge is lit, so with the ramp inverted it sits along the BOTTOM
+   third rather than the top. Inset from the edges so the pill's rim reads as
+   a lip rather than a flat band, and given an ELLIPTICAL far radius so the
+   highlight curves the way a cylinder's does. A straight-sided rectangle here
+   is what makes cheap imitations look like a sticker.
+   z-index:-1 keeps it above the element's own background but below the label;
+   .gloss isolates so that cannot escape the button. */
+.gloss::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  bottom: 1px;
+  left: 3.5%;
+  right: 3.5%;
+  height: 42%;
+  border-radius: 60% 60% 999px 999px / 22px 22px 999px 999px;
+  /* The ramp reaches zero at 82%, not at 100%. Fading across the full box
+     leaves the shape's own rounded bottom edge faintly visible, and that
+     edge cuts a hard line straight through the label; retiring the alpha
+     early means the streak ends in air and the shape never shows. */
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.46) 52%,
+    rgba(255, 255, 255, 0) 82%
+  );
+  pointer-events: none;
+}
+
+.gloss:hover {
+  filter: brightness(1.06);
+}
+
+/* Pressed — the ramp flips back the other way: icy at the top, saturated blue
+   falling to the bottom edge, with the specular returning to the top. The two
+   states are a straight exchange, so pressing the button visibly turns the
+   surface over rather than merely tinting it.
+
+   The step into blue lands at 30%, not at the midline. The white label is the
+   constraint again, mirrored: a gentle transition put light under the TOP of
+   the glyphs and measured 1.58:1 across the band. Held to the top fifth, the
+   same band measures 4.58:1 — and a hard break is the more Aqua reading
+   anyway. */
+.gloss:active {
+  transform: translateY(1px);
+  background: linear-gradient(
+    to bottom,
+    var(--aqua-top) 0%,
+    var(--aqua-mid) 14%,
+    var(--aqua-break) 30%,
+    var(--aqua-bottom) 100%
+  );
+  box-shadow:
+    0 1px 3px rgba(9, 30, 120, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -6px 10px -6px rgba(8, 24, 100, 0.5),
+    inset 0 -1px 2px rgba(8, 24, 100, 0.45);
+}
+
+/* The streak travels with the light, back up to the top edge. */
+.gloss:active::before {
+  bottom: auto;
+  top: 1px;
+  border-radius: 999px 999px 60% 60% / 999px 999px 22px 22px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.46) 52%,
+    rgba(255, 255, 255, 0) 82%
+  );
+}
+
+/* Focus — the soft blue halo Mac OS X put around a focused control.
+   The thin white/blue ring inside the glow stays: a diffuse glow on its own
+   does not clear the 3:1 contrast bar for a visible focus indicator, and it
+   vanishes completely under forced colors. Halo for the look, ring for the
+   requirement. */
+.gloss:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--apple-blue),
+    0 0 10px 5px var(--focus-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* ---- sizes ---- */
+.gloss--lg {
+  padding: clamp(7px, 1vh, 11px) clamp(24px, 3vw, 44px);
+  font-size: clamp(15px, 1.42vw, 20px);
+  letter-spacing: -0.005em;
+  min-height: 40px;
+}
+
+/* The nav pill. Smaller, and it keeps its capitals — the reference
+   sets the nav label as "Join Now" while the buttons inside the
+   composition are lowercase. */
+.gloss--sm {
+  padding: 8px 20px;
+  font-size: clamp(14px, 1.05vw, 16px);
+  font-weight: 600;
+  text-transform: none;
+  min-height: 34px;
+}
+
+/* ============================================================
+   The white gel — Mac OS X's NON-default button.
+
+   The secondary used to be an outline with no material at all, staying
+   subordinate by giving the gloss up. That was the right instinct in a page
+   where gloss was a rare accent; it is the wrong one now that every control
+   is glass, because the outline would read as the single unfinished element
+   on the page.
+
+   Aqua's own answer is better and is what this is: identical silhouette,
+   identical size, identical material, colour alone carrying the hierarchy —
+   the blue button is the default action, the white one is not. It inherits
+   the whole four-pass build from .gloss and only re-points the ramp.
+   ============================================================ */
+.gloss--plain {
+  border-color: var(--gel-edge);
+  color: #1d1d1f;
+  /* Engraved rather than dropped: dark type on a pale gel is cut into the
+     surface, and a drop shadow under it would read as the label floating
+     above a button it is supposed to be part of. */
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+  background: linear-gradient(
+    to bottom,
+    var(--gel-top) 0%,
+    var(--gel-mid) 44%,
+    var(--gel-break) 52%,
+    var(--gel-bottom) 100%
+  );
+  box-shadow:
+    0 6px 16px var(--gel-cast),
+    0 1px 2px rgba(0, 0, 0, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -7px 11px -7px rgba(255, 255, 255, 0.9),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* The upper half is already near-white, so the full-strength streak has
+   nothing to do but flatten it. Cut back until it reads as sheen. */
+.gloss--plain::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.35) 52%,
+    rgba(255, 255, 255, 0) 82%
+  );
+}
+
+.gloss--plain:active {
+  background: linear-gradient(
+    to bottom,
+    var(--gel-bottom) 0%,
+    var(--gel-break) 42%,
+    var(--gel-mid) 96%,
+    var(--gel-top) 100%
+  );
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.24),
+    inset 0 3px 6px rgba(0, 0, 0, 0.32),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.gloss--plain:focus-visible {
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--apple-blue),
+    0 0 10px 5px var(--focus-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+/* ============================================================
+   The Aqua CTA — a wide rounded rectangle, not a capsule.
+
+   This is the one control on the page that departs from `.gloss`'s pill
+   silhouette, so it restates the material rather than inheriting it. The
+   proportions are the point: long and shallow, the way an early Mac OS X
+   "Download" button was, where the pill reads as a modern product CTA.
+
+   Four differences from the pill above, all deliberate:
+
+     · RADIUS is a full capsule, so the ends read as one continuous curve.
+     · The RAMP is smooth. The pill's hard break at 52% models light
+       refracting through a thick curved gel; a wide shallow button is a
+       shallow curve, and the same abrupt step on it reads as two stacked
+       colours instead of one piece of glass.
+     · The GLOSS is a broad white sheet across the upper half rather than an
+       inset streak, because there is much more surface to catch it.
+     · The ARROW is a bare glyph beside the label. It used to be a second gel
+       badge nested inside this one, which made the button read as a control
+       containing another control.
+   ============================================================ */
+.gloss--arrow {
+  /* Capsule. The width is still explicit rather than padding-driven — the
+     label is short, and left to its content the button collapses to something
+     smaller than the copy above it can carry. Held to roughly 5:1 so it stays
+     a generous curve rather than a stretched lozenge. */
+  width: clamp(185px, 18vw, 245px);
+  min-height: clamp(42px, 5.4vh, 54px);
+  padding: 0 clamp(16px, 1.6vw, 24px);
+  gap: clamp(10px, 1.2vw, 18px);
+  border-radius: 999px;
+  /* Indigo rather than black — a thin cool outline belongs to the glass; a
+     neutral one reads as a stroke drawn around it. */
+  border: 1px solid #1b4b96;
+
+  text-transform: none;
+  font-size: clamp(14px, 1.4vh + 0.4vw, 19px);
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  /* Set INTO the glass: a tight dark shadow with no spread, so the letters
+     look pressed into the surface rather than floating over it. */
+  text-shadow: 0 1px 1px rgba(11, 42, 96, 0.55);
+
+  /* Icy blue-white at the top falling to a richer sky blue — five stops, all
+     of them soft, so the surface reads as translucent depth rather than as a
+     gradient fill.
+
+     INVERTED, and the icy end is confined to the bottom ~25%. That confinement
+     is a legibility constraint, not a look: the label is white and vertically
+     centred, so any light reaching the middle of the button takes the text
+     with it. Measured across the glyph band (34–66% of the height) white
+     holds 4.80:1 against this ramp — the light-topped ramp it replaced
+     measured 1.23:1 there, which the text-shadow was quietly propping up.
+
+     The depth is set by the ink: a lighter, friendlier blue was tried while
+     the label was black, and white cannot live on it — it measures 4.45:1 at
+     the top stop and falls from there.
+
+     Written as explicit per-state ramps rather than a brightness() filter on
+     one, because a filter drags the float shadow along with the face and the
+     shadow should not move when only the surface does. */
+  background: linear-gradient(
+    to bottom,
+    #17539f 0%,
+    #1f66c4 48%,
+    #2a78d2 75%,
+    #a8d6f8 94%,
+    #eaf7ff 100%
+  );
+
+  box-shadow:
+    /* the float — diffuse and blue-tinted, never a hard contact shadow */
+    0 8px 18px rgba(23, 68, 145, 0.26),
+    0 2px 4px rgba(23, 68, 145, 0.2),
+    /* top is the shadowed side now: a thin lip over gathering shade */
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 7px 12px -7px rgba(8, 40, 105, 0.7),
+    /* and the bottom is the lit rim */
+    inset 0 -1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -2px 3px rgba(255, 255, 255, 0.45);
+}
+
+/* The gloss sheet. A broad white pane over the upper half whose bottom edge
+   curves — the ellipse in the radius is what bends it — so it reads as light
+   lying on a curved surface rather than as a flat band. Inset from the sides
+   so the button's own rim stays visible as a lip around it. */
+.gloss--arrow::before {
+  bottom: 1px;
+  top: auto;
+  left: 3.5%;
+  right: 3.5%;
+  height: 50%;
+  border-radius: 55% 55% 999px 999px / 16px 16px 999px 999px;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.6) 46%,
+    rgba(255, 255, 255, 0.18) 84%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* GlossyButton renders its icon slot BEFORE the label, which is right for a
+   leading icon and wrong for a trailing one. `order` fixes that inside the
+   flex row the button already is — no second slot on the component, and no
+   grid to overflow. */
+.gloss--arrow > span {
+  order: 1;
+}
+
+.gloss__arrow {
+  order: 2;
+  flex: none;
+  /* Thinner than the icon set's default weight. At this size a 2px stroke
+     next to 700-weight text reads as a third element competing with the
+     label, where a hairline reads as punctuation after it. */
+  stroke-width: 1.6;
+  opacity: 0.95;
+}
+
+/* Hover settles the surface rather than lighting it up: the same inverted
+   ramp, a shade deeper. `filter: none` is doing real work — .gloss's own
+   :hover rule adds brightness(1.06), which would undo the settle. */
+.gloss--arrow:hover {
+  filter: none;
+  background: linear-gradient(
+    to bottom,
+    #134a92 0%,
+    #1b5db6 48%,
+    #246fc9 75%,
+    #9bcdf4 94%,
+    #e3f4ff 100%
+  );
+}
+
+/* Pressed: the surface turns over. Icy at the top falling to saturated blue,
+   the exact reverse of rest, with the specular travelling back to the top
+   edge with the light. The icy end is held to the top fifth for the same
+   reason rest holds it to the bottom fifth — the white label crosses the
+   middle, and light there costs 3 points of contrast. */
+.gloss--arrow:active {
+  transform: translateY(1px);
+  background: linear-gradient(
+    to bottom,
+    #eaf7ff 0%,
+    #bfe2fb 13%,
+    #2a78d2 30%,
+    #1f66c4 100%
+  );
+  box-shadow:
+    0 1px 3px rgba(23, 68, 145, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -6px 11px -6px rgba(10, 52, 125, 0.6),
+    inset 0 -1px 2px rgba(10, 52, 125, 0.4);
+}
+
+.gloss--arrow:active::before {
+  bottom: auto;
+  top: 1px;
+  border-radius: 999px 999px 55% 55% / 999px 999px 16px 16px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.6) 46%,
+    rgba(255, 255, 255, 0.18) 84%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* .gloss:focus-visible replaces the whole box-shadow, which on this button
+   would drop the bottom inner shadow and the float and leave a flat blue
+   lozenge inside two rings. Restated here with the material intact. */
+.gloss--arrow:focus-visible {
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--apple-blue),
+    0 0 10px 5px var(--focus-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 2px 3px rgba(255, 255, 255, 0.5),
+    inset 0 -7px 12px -7px rgba(10, 52, 125, 0.8);
+}
+
+/* Both gels are gradients over a transparent border; forced colors strips
+   the fill and would leave an invisible control. Hand them back a real
+   border and let the system paint them. */
+@media (forced-colors: active) {
+  .gloss {
+    border: 1px solid ButtonBorder;
+    forced-color-adjust: none;
+    background: ButtonFace;
+    color: ButtonText;
+    text-shadow: none;
+  }
+
+  .gloss::before {
+    display: none;
+  }
+}

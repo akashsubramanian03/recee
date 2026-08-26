@@ -7,3 +7,6 @@ dist
 # src/assets/; these 3.4MB originals are unreferenced by the build. Kept out
 # of a public repo deliberately — easy to add, painful to purge from history.
 /ChatGPT Image*.png
+
+# local secrets
+.env

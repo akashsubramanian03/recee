@@ -1,0 +1,22 @@
+{
+  "name": "recce-backend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed.js",
+    "db:reset": "node scripts/migrate.js --reset && node scripts/seed.js",
+    "db:view": "node scripts/dump.js",
+    "db:prune": "node scripts/prune.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
+  }
+}

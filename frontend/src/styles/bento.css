@@ -1,0 +1,216 @@
+/* ============================================================
+   The bento mosaic — the right column.
+
+   Four `.bento__row` elements, each a two-column grid. The column ratios and
+   the row heights live on the panel data in BentoGrid.jsx, not here: a cell's
+   position and its content are one decision, and splitting them across two
+   files is how a mosaic drifts out of alignment with what it describes.
+
+   Rows rather than one tall N-column grid because the reference uses TWO
+   different splits (54.8/43.2 and 40.9/56.7). On a shared track set, every
+   internal gutter inside a spanning panel counts toward that panel's width,
+   which pulled the measured split to 53.3/44.8. A row has exactly one gap in
+   it, so the fr ratio is the panel ratio.
+   ============================================================ */
+/* grid-template-rows is set inline from the data — unequal by measurement,
+   not by feel. Equal rows read as a table rather than as a mosaic. */
+.bento {
+  display: grid;
+  gap: var(--gap);
+  min-height: 0;
+}
+
+/* grid-template-columns comes inline, per row. */
+.bento__row {
+  display: grid;
+  gap: var(--gap);
+  min-width: 0;
+  min-height: 0;
+}
+
+.bento__cell {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+/* ---------- photo cells ---------- */
+.bento__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* cover, so the panel's aspect ratio can shift with the viewport without
+     ever letterboxing — the crop moves instead of the frame. */
+  object-fit: cover;
+  /* The black and white lives HERE, not in the asset. The files are colour,
+     so this is one line to tune or remove. */
+  filter: grayscale(1) contrast(1.06);
+  user-select: none;
+}
+
+/* ---------- text cells ---------- */
+.bento__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(10px, 1.8vh, 22px) clamp(12px, 1.5vw, 24px);
+  /* Nothing in a cell may push the cell taller than its grid track, or the
+     page gains height and the no-scroll rule breaks. Overflow is clipped as a
+     last resort; the clamps above are what should keep it from happening. */
+  overflow: hidden;
+}
+
+/* Sized down from 4.6vh. Row 3 is the shortest in the mosaic AND carries the
+   most copy (Collaborate runs to three lines), so it sets the ceiling for the
+   badge everywhere — a badge that fits three of the four panels is a badge
+   that clips the fourth. */
+.bento__badge {
+  width: clamp(28px, 3.9vh, 44px);
+  height: clamp(28px, 3.9vh, 44px);
+  margin-bottom: clamp(5px, 1vh, 13px);
+  flex: none;
+}
+
+.bento__title {
+  margin: 0 0 clamp(3px, 0.6vh, 8px);
+  font-size: clamp(13px, 1.6vh + 0.45vw, 22px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  color: var(--blue);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.bento__body {
+  margin: 0;
+  font-size: clamp(10px, 1.05vh + 0.32vw, 15px);
+  line-height: 1.36;
+  color: var(--ink-soft);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* ---------- responsive ---------- */
+/* Below this the two-column body becomes one column, and a 24-track mosaic in
+   a full-width single column would give each cell an absurd aspect ratio. The
+   grid drops to a 2-up so the panels stay roughly square. */
+@media (max-width: 900px) {
+  /* The mosaic becomes a stack of four wide rows, and the ROW becomes the
+     panel: the reference draws one brushed-metal card per feature, with the
+     copy on its left and the photograph inset on its right, rather than two
+     panels sitting side by side.
+
+     So the row takes the panel material and the text cell gives it up. The
+     photo keeps its own frame, because inset inside a larger panel it still
+     needs an edge of its own. */
+  .bento {
+    grid-template-rows: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  .bento__row {
+    display: flex !important;
+    align-items: stretch;
+    gap: 0;
+    padding: clamp(5px, 0.75vh, 11px);
+    border-radius: 10px;
+    background: linear-gradient(to bottom, #fdfdfd 0%, var(--plat-200) 55%, #dfdfdf 100%);
+    border: 1px solid rgba(0, 0, 0, 0.13);
+    border-top-color: rgba(255, 255, 255, 0.95);
+    border-bottom-color: var(--bevel-dark);
+    box-shadow:
+      inset 0 1px 0 var(--bevel-light),
+      0 1px 3px rgba(0, 0, 0, 0.13),
+      0 6px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Text always leads and the photograph always follows, whichever way round
+     the row is written for desktop. `order` does that without the data having
+     to know a breakpoint exists. */
+  .bento__text {
+    order: 1;
+    /* 56/44, not the reference's 52/48. The reference is drawn at 431px wide;
+       at 390 every column is ~10% narrower, and the text side is the half that
+       cannot absorb it — one extra wrap per panel costs more height than the
+       whole mosaic has spare. The photo gives up the four points. */
+    flex: 1 1 56%;
+    min-width: 0;
+    /* Stripped of the panel material — the row is carrying it now. */
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0 clamp(5px, 1.6vw, 14px);
+  }
+
+  .bento__cell.panel--photo {
+    order: 2;
+    flex: 1 1 44%;
+    min-width: 0;
+    border-radius: 8px;
+  }
+
+  /* Laid out as a row, the badge sits BESIDE the heading rather than above it
+     — stacked, the three elements cannot fit the height a quarter of the
+     mosaic leaves them. */
+  .bento__text {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-content: center;
+    column-gap: clamp(6px, 1.8vw, 12px);
+    row-gap: 1px;
+  }
+
+  /* Every point the badge gives up goes straight to the text measure beside
+     it, which is the scarce dimension here. */
+  .bento__badge {
+    grid-row: 1 / 3;
+    align-self: center;
+    margin-bottom: 0;
+    width: clamp(28px, 4.2vh, 38px);
+    height: clamp(28px, 4.2vh, 38px);
+  }
+
+  /* Sized to keep "Film Discussions" — the longest heading — on ONE line.
+     Wrapped, it alone would push the row past its track. */
+  .bento__title {
+    align-self: end;
+    margin: 0;
+    font-size: clamp(13px, 1.6vh + 0.42vw, 19px);
+    letter-spacing: -0.02em;
+  }
+
+  .bento__body {
+    align-self: start;
+    /* Capped at 13px, not 14. On a tall narrow viewport — iPad portrait — the
+       vh term keeps growing the copy while the row height does not follow,
+       and the third line was dropping out the bottom of the panel. */
+    font-size: clamp(10px, 1.08vh + 0.32vw, 13px);
+    line-height: 1.24;
+  }
+}
+
+/* Shown only before the first fetch lands. The panels are empty but present,
+   so the grid claims its real height from the first paint — on a page that
+   cannot scroll, letting the mosaic collapse and then expand would resize the
+   hero column beside it. */
+.bento--placeholder {
+  grid-template-rows: 1.12fr 1fr 0.95fr 1.08fr;
+  position: relative;
+}
+
+.bento--placeholder .bento__cell {
+  opacity: 0.55;
+}
+
+.bento__error {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 50%;
+  margin: 0;
+  text-align: center;
+  font-size: clamp(11px, 1.1vh + 0.3vw, 14px);
+  font-weight: 600;
+  color: #a31515;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}

@@ -1,0 +1,581 @@
+/* ============================================================
+   The hero column.
+
+   `.hero-col` wraps the hero panel and the meta row, and which of the three
+   elements is the PANEL changes with the breakpoint:
+
+     desktop   .hero-col is the panel; .hero and .meta are plain content
+               inside it, divided by a hairline — the reference has the meta
+               row inside the hero panel.
+     mobile    .hero-col becomes `display: contents` and vanishes as a box,
+               so .hero and .meta become grid items of .body in their own
+               right, each carrying its own panel, and the meta row can be
+               ORDERED below the mosaic.
+
+   All three carry the `panel` class so the recipe is written once. The
+   breakpoint only has to neutralise whichever ones are not currently the box:
+   on mobile that happens for free, because `display: contents` generates no
+   box for the panel styles to paint on.
+   ============================================================ */
+@media (min-width: 901px) {
+  .hero.panel,
+  .meta.panel {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* Centred in the space left over.
+
+     `flex: 1` comes FIRST for a reason. .hero is a flex item of .hero-col and
+     sizes to its own content by default, so the empty space was never inside
+     it — it sat between the hero block and the meta row that `margin-top:auto`
+     pins to the bottom of the panel. Centring alone did nothing, because there
+     was nothing to centre within. The hero has to claim the slack before it
+     can distribute it.
+
+     `safe` is load-bearing, not decoration: plain `center` on an overflowing
+     flex column pushes the first line out through the TOP of the box, where it
+     cannot be scrolled to on a page that never scrolls. `safe center` reverts
+     to flex-start the moment the content stops fitting, so a short viewport
+     clips the bottom — recoverable, and what it did before — rather than
+     beheading the headline. A browser without `safe` drops the declaration and
+     also lands on flex-start, the same safe outcome. */
+  .hero {
+    flex: 1 1 auto;
+    justify-content: safe center;
+  }
+}
+
+.hero-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .hero-col {
+    display: contents;
+  }
+}
+
+/* ============================================================
+   The hero panel — the left column.
+
+   One .panel holding the whole pitch. Every size below is a clamp with a vh
+   term in it, because the page must never scroll: the column has to give up
+   height gracefully as the viewport shortens rather than overflowing at a
+   fixed size. The vh terms are what make that automatic instead of a stack of
+   breakpoints.
+   ============================================================ */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 0;
+  /* Content must never escape the panel. On a page that cannot scroll, an
+     overflowing flex column does not push the page taller — it draws straight
+     over whatever is beneath it, which on a phone put the CTA and the social
+     row on top of the mosaic. Clipping is the wrong outcome too, but it is a
+     legible wrong outcome rather than a broken one. */
+  overflow: hidden;
+  padding: clamp(20px, 3.4vh, 46px) clamp(20px, 2.6vw, 44px);
+}
+
+.hero__chip {
+  margin-bottom: clamp(14px, 3vh, 40px);
+}
+
+/* Tight leading and a hard negative track — the headline is the one element
+   allowed to dominate, and at this weight the default spacing would make two
+   lines read as two separate statements rather than one. */
+.hero__headline {
+  margin: 0;
+  font-size: clamp(30px, 5.4vh + 1.1vw, 68px);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+}
+
+.hero__body {
+  margin: clamp(14px, 2.6vh, 30px) 0 0;
+  font-size: clamp(12px, 1.15vh + 0.42vw, 18px);
+  line-height: 1.62;
+  color: var(--ink-soft);
+}
+
+.hero__cta {
+  margin-top: clamp(16px, 3.2vh, 40px);
+}
+
+/* ---------- meta row ---------- */
+/* Pushed to the bottom of the panel by auto margin rather than by a fixed
+   offset, so the panel absorbs whatever height the viewport has left and the
+   row always closes the column.
+
+   Four items on two rows: badge and tagline on the left, "Follow us" and the
+   social set on the right. The 1fr on the tagline is what pushes the right
+   pair to the far edge. */
+.meta {
+  width: 100%;
+  margin-top: auto;
+  /* The horizontal padding MATCHES .hero's, and has to be stated rather than
+     inherited: the meta row used to be a child of the hero and picked this up
+     for free, but it is a sibling now so the panel would run the divider and
+     the badge out to the panel's own edges, adrift from the headline above. */
+  padding: clamp(12px, 2.2vh, 22px) clamp(20px, 2.6vw, 44px)
+    clamp(14px, 2.4vh, 26px);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: clamp(8px, 1vw, 16px);
+  position: relative;
+}
+
+/* The divider, drawn as a pseudo-element rather than a border so it can be
+   INSET to the same measure as the copy — a border would run the full width of
+   the panel and read as the panel being two pieces of metal joined, where the
+   reference has a short rule sitting under the content.
+
+   It only exists while the meta row shares a panel with the hero; on mobile
+   the row is its own panel and a line across its top would just be stray. */
+.meta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: clamp(20px, 2.6vw, 44px);
+  right: clamp(20px, 2.6vw, 44px);
+  height: 1px;
+  background: rgba(0, 0, 0, 0.13);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.meta__badge {
+  width: clamp(34px, 4.4vh, 46px);
+  height: clamp(34px, 4.4vh, 46px);
+}
+
+.meta__tagline {
+  margin: 0;
+  font-size: clamp(10px, 0.95vh + 0.3vw, 14px);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.meta__follow {
+  font-size: clamp(10px, 0.95vh + 0.3vw, 14px);
+  color: var(--ink-soft);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  white-space: nowrap;
+}
+
+.meta__socials {
+  display: flex;
+  gap: clamp(5px, 0.6vw, 9px);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* The badge IS the anchor, so the whole circle is the hit target. Floored at
+   34px rather than allowed to scale all the way down with the panel: below
+   that it stops being a reliable tap target, and a decorative circle is not
+   worth failing a pointer-size floor for. */
+.meta__social {
+  width: clamp(34px, 4vh, 40px);
+  height: clamp(34px, 4vh, 40px);
+  cursor: pointer;
+  transition: filter 0.16s ease, transform 0.12s ease;
+}
+
+.meta__social:hover {
+  filter: brightness(1.05);
+}
+
+/* Same inverted-ramp push-in the gel buttons use, so a badge and a button
+   agree about what being pressed looks like. */
+.meta__social:active {
+  transform: translateY(1px);
+  background: linear-gradient(to bottom, var(--plat-400) 0%, var(--plat-200) 60%, #ffffff 100%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.meta__social:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--apple-blue),
+    0 0 9px 4px var(--focus-glow);
+}
+
+/* The mobile meta row. These MUST come after the base .meta__* rules above:
+   they are the same specificity, so a media query placed earlier in the file
+   loses to the unconditional rule that follows it. Sitting above, the social
+   badge override here was silently doing nothing. */
+@media (max-width: 900px) {
+  .meta {
+    margin-top: 0;
+    padding: clamp(8px, 1.2vh, 16px) clamp(10px, 3vw, 20px);
+    column-gap: clamp(6px, 2vw, 12px);
+  }
+
+  .meta::before {
+    display: none;
+  }
+
+  /* All four items share one line here, as the reference draws them, and at
+     390px that line has about 366px in it. Everything except the tagline is
+     fixed width, so every point the badges and the label give up is a point
+     the tagline gets — and the tagline is the only item that WRAPS when it
+     runs short, which is what was turning two lines into three. */
+  .meta__badge {
+    width: clamp(34px, 4.4vh, 44px);
+    height: clamp(34px, 4.4vh, 44px);
+  }
+
+  /* 31px, not 36. Measured, the tagline was 5px short of holding "One
+     passion. Many stories." on one line, and the social set is the widest
+     fixed block competing with it. Still comfortably over the 24px minimum
+     target size — this buys text room without buying it from a tap target. */
+  .meta__social {
+    width: clamp(31px, 3.5vh, 34px);
+    height: clamp(31px, 3.5vh, 34px);
+  }
+
+  .meta__socials {
+    gap: clamp(4px, 1vw, 6px);
+  }
+
+  .meta__tagline,
+  .meta__follow {
+    font-size: clamp(10px, 0.85vh + 0.4vw, 13px);
+    line-height: 1.4;
+  }
+}
+
+/* Narrowest phones. Even with the badges trimmed the tagline is ~29px short
+   of one line here, and the font is already on its 10px floor. "Follow us"
+   goes rather than the tagline breaking into three lines: it is a label for
+   three icons that each already carry their own aria-label, so nothing is
+   lost to a screen reader and the row keeps the shape the reference gives it. */
+@media (max-width: 380px) {
+  .meta__follow {
+    display: none;
+  }
+}
+
+/* ---------- responsive ---------- */
+/* Stacked, the hero gets a wide short box instead of a narrow tall one, and
+   the headline's vh-driven size is suddenly far too big for the height it has
+   left. Everything in the column tightens together so the panel still holds
+   its whole content. */
+@media (max-width: 900px) {
+  .hero {
+    position: relative;
+    /* Centred for the same reason desktop is, and it matters more here: with
+       the mosaic gone the hero owns the whole column, so top-aligned content
+       left a screen-height gap under the button. `safe` keeps it flex-start
+       the moment the content stops fitting, so a short phone clips the bottom
+       rather than pushing the chip off the top. */
+    justify-content: safe center;
+    padding: clamp(14px, 2.2vh, 26px) clamp(16px, 4vw, 28px);
+  }
+
+  /* The photograph, as a background on a pseudo-element rather than an <img>.
+     Two reasons: a background inside an unmatched media query is never
+     downloaded, so desktop pays nothing for a mobile-only image; and the
+     picture is pure atmosphere behind the copy, which is exactly what a
+     decorative background is for and what an <img> would wrongly announce.
+
+     The mask is what makes it belong to the panel instead of sitting on it —
+     the photo dissolves into the brushed metal rather than ending on an edge,
+     so the text over its left tail stays readable. */
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 54%;
+    z-index: 0;
+    background-image: url('../assets/bento-set.webp');
+    background-size: cover;
+    /* Anchored high. The panel is now full-column height on mobile, and
+       `cover` on a tall narrow box zooms hard — centred, the crop landed on
+       bare housing. 38% keeps the lens and the haze in frame. */
+    background-position: 52% 38%;
+    /* Darkened and pushed in contrast so the equipment SILHOUETTES rather than
+       glares. Ungraded, the projector's white body is lighter than the panel
+       it sits in, which inverts the whole hierarchy — the brightest thing on
+       the page was the background of the headline. */
+    filter: grayscale(1) contrast(1.22) brightness(0.82);
+    opacity: 0.5;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 78%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 78%);
+    pointer-events: none;
+  }
+
+  /* Everything in the column rides above the photograph. */
+  .hero > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* The copy keeps to the left of the bleed so it never sits on the bright
+     part of the picture. */
+  .hero__headline,
+  .hero__body {
+    max-width: 60%;
+  }
+
+  .hero__headline {
+    font-size: clamp(26px, 3.5vh + 2.6vw, 44px);
+  }
+
+  .hero__chip {
+    margin-bottom: clamp(8px, 1.4vh, 16px);
+  }
+
+  .hero__body {
+    margin-top: clamp(8px, 1.4vh, 16px);
+    line-height: 1.45;
+  }
+
+  /* Width is capped against the PANEL here, not the viewport. The hero
+     photograph bleeds in from 46% on mobile, and the button is opaque — left
+     at its desktop width it would sit squarely on top of the picture instead
+     of beside it. 62% keeps it in the metal. */
+  .hero__cta {
+    margin-top: clamp(10px, 1.6vh, 18px);
+    width: min(70%, 235px);
+  }
+}
+
+/* Short phones. A 780px-tall screen has ~60px less to give than an 844 one and
+   it all comes out of the hero, the only block here holding a two-line display
+   headline. Keyed on height as well as width, because height is the dimension
+   actually running out — a 360-wide phone with a tall screen does not need
+   this and should not get it. */
+@media (max-width: 900px) and (max-height: 820px) {
+  .hero {
+    padding: clamp(11px, 1.7vh, 20px) clamp(14px, 3.6vw, 24px);
+  }
+
+  .hero__headline {
+    font-size: clamp(24px, 3vh + 2.4vw, 38px);
+  }
+
+  .hero__body {
+    margin-top: clamp(6px, 1vh, 12px);
+    font-size: clamp(11px, 1vh + 0.4vw, 15px);
+    line-height: 1.38;
+  }
+
+  .hero__cta {
+    margin-top: clamp(8px, 1.2vh, 14px);
+    min-height: clamp(38px, 4.8vh, 48px);
+  }
+}
+
+/* The meta row collapses to two stacked rows before its four columns get too
+   narrow to hold the tagline on two lines. Bounded BELOW as well as above:
+   this is a symptom of the narrow desktop hero column, and on mobile the row
+   is full-page width again and the reference keeps all four items on one
+   line. */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .meta {
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: clamp(6px, 1.2vh, 12px);
+  }
+
+  .meta__follow {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .meta__socials {
+    grid-column: 2;
+    justify-self: end;
+  }
+}
+
+/* ============================================================
+   The join form.
+
+   It occupies the hero panel in place of the pitch, so it inherits that
+   panel's padding and its `safe center` vertical placement. Everything is
+   sized in vh for the same reason the rest of the column is: the page never
+   scrolls, so the form has to give up height gracefully rather than overflow.
+   ============================================================ */
+.join {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+}
+
+.join__title {
+  margin: clamp(10px, 2vh, 22px) 0 0;
+  font-size: clamp(22px, 3.4vh + 0.7vw, 44px);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+/* The heading takes focus on success so the change is announced, and a ring
+   around it reads as an error to sighted users. Both the outline AND the glow
+   have to go — the global :focus-visible rule paints the halo with box-shadow,
+   so clearing the outline alone left a blue box around the confirmation.
+
+   Safe here and only here: this is a programmatic focus target with
+   tabIndex={-1}, never reachable by keyboard navigation. */
+.join__title:focus,
+.join__title:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Six fields now, so the vertical rhythm is tighter than it was for three and
+   the gap scales harder with height. */
+.join__fields {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1vh, 11px);
+  width: min(100%, 360px);
+  margin-top: clamp(8px, 1.8vh, 20px);
+}
+
+/* Mobile and age share a line. Age is a four-character field and a full-width
+   input for it would spend a whole row of a panel that has none to spare. */
+.join__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.42fr);
+  gap: clamp(6px, 1.2vw, 12px);
+}
+
+/* Chrome paints spinners on number inputs, which sit on top of the Aqua well
+   and cannot be styled to match it. The field is validated on both sides, so
+   the stepper buys nothing. */
+.join__field--age input::-webkit-outer-spin-button,
+.join__field--age input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.join__field--age .join__input {
+  appearance: textfield;
+}
+
+.join__field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+}
+
+/* Clipped to one line. The longest label — the question about the film that
+   made you fall in love with cinema — wraps to three lines in the narrow
+   column, and three lines of label above a 34px input is more label than
+   field. The full text stays in the DOM for screen readers; only the display
+   is truncated. */
+.join__label {
+  font-size: clamp(10px, 1vh + 0.25vw, 13px);
+  font-weight: 600;
+  color: var(--ink-soft);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* .field in aqua.css supplies the inset Aqua well and the focus halo; this
+   only sets the size, which has to flex with the viewport. */
+.join__input {
+  width: 100%;
+  min-height: clamp(30px, 4vh, 40px);
+  font-size: clamp(12px, 1.3vh + 0.3vw, 15px);
+}
+
+.join__error {
+  font-size: clamp(10px, 1vh + 0.2vw, 12px);
+  font-weight: 600;
+  color: #a31515;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Reserves its line whether or not there is a message, so the submit button
+   does not jump down the panel the moment a request fails. */
+.join__failure {
+  min-height: 1.1em;
+  margin: clamp(4px, 0.8vh, 9px) 0 0;
+  font-size: clamp(10px, 1vh + 0.2vw, 12px);
+  font-weight: 600;
+  color: #a31515;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.join__actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.6vw, 20px);
+  margin-top: clamp(8px, 1.6vh, 18px);
+}
+
+.join__submit[disabled] {
+  cursor: progress;
+  filter: saturate(0.6);
+}
+
+.join__back {
+  padding: 6px 4px;
+  border: 0;
+  background: none;
+  font-family: var(--sans);
+  font-size: clamp(11px, 1.1vh + 0.25vw, 14px);
+  font-weight: 600;
+  color: var(--ink-soft);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+
+.join__back:hover {
+  color: var(--ink);
+}
+
+.join--done .hero__body {
+  margin-top: clamp(10px, 2vh, 20px);
+}
+
+.join--done .join__back {
+  margin-top: clamp(10px, 2vh, 22px);
+}
+
+/* Below the breakpoint the hero shares its panel with a bled photograph, and
+   the form has to stay clear of it exactly as the pitch does. */
+@media (max-width: 900px) {
+  /* The form gets the FULL width on mobile, unlike the pitch copy. The photo
+     is hidden while joining (below), so there is nothing to stay clear of, and
+     six fields squeezed into 62% of a 390px screen left the longest label
+     with about ten characters of room. */
+  .join__fields {
+    width: 100%;
+    gap: clamp(4px, 0.8vh, 9px);
+  }
+
+  .join__title {
+    max-width: 100%;
+    font-size: clamp(20px, 2.6vh + 1.4vw, 30px);
+  }
+
+  /* The heading and the chip are the only things left competing with the
+     fields for height; trim them too. */
+  .join .hero__chip {
+    margin-bottom: clamp(6px, 1vh, 12px);
+  }
+}

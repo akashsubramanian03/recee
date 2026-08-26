@@ -1,0 +1,125 @@
+/* Recee design tokens — Aqua / Mac OS X treatment.
+
+   The palette is no longer sampled from target.png. The page has deliberately
+   moved off the reference's electric blue onto Mac OS X's own system blue and
+   platinum chrome, so these are choices again rather than measurements — see
+   the header of aqua.css for the material rules they feed. */
+:root {
+  /* ---- Platinum chrome ----
+     The gray ramp every structural surface is built from: toolbars, panels,
+     dividers, the desktop itself. Ordered light → dark so a gradient can be
+     written straight down the scale and always agree with the light source. */
+  --plat-100: #f7f7f7;   /* top of a brushed-metal ramp */
+  --plat-200: #ececec;   /* light panel — the desktop base */
+  --plat-300: #dcdcdc;
+  --plat-400: #d4d4d4;   /* mid gray — bottom of a metal ramp */
+  --plat-600: #8e8e8e;   /* dark chrome text */
+  --plat-edge: #a8a8a8;  /* the hard 1px border around chrome */
+
+  /* ---- Bevel primitives ----
+     Aqua's whole physicality is one lit edge over one shadowed edge. Naming
+     them means every bevel on the page is the SAME bevel: change these two
+     and the nav, the panels and the segmented control all move together. */
+  --bevel-light: rgba(255, 255, 255, 0.9);  /* the top edge catching light */
+  --bevel-dark: rgba(0, 0, 0, 0.28);        /* the bottom edge in shadow */
+  --pinstripe: rgba(0, 0, 0, 0.035);        /* one stripe of the weave */
+
+  /* Surface — the platinum desktop. Also the paint-before-mount fill. */
+  --bg: var(--plat-200);
+
+  /* Ink */
+  --ink: #0a0a0a;
+  /* Solved, not picked: 4.56:1 against #dcdcdc, the darkest point the
+     desktop radial reaches. The tagline and the caption both use it, and
+     the lighter gray this started at only made 3.9:1 down there. */
+  --ink-soft: #606065;
+  --nav-ink: #1a1a1a;
+  --hairline: #c8c8c8;
+
+  /* ---- System blue ----
+     Mac OS X's own interactive blue, and the page's only accent. Used
+     everywhere something can be clicked, not reserved for two buttons.
+
+     #2676d7 rather than the brief's #2f7fe0, which is the top of its stated
+     #1c5fc4–#2f7fe0 range: white on #2f7fe0 measures 4.01:1, and this value
+     is the lightest point in that range at which the buttons' white labels
+     clear 4.5:1. Still the brief's blue, just the accessible end of it. */
+  --sys-blue-lite: #7fb6f7;
+  --sys-blue: #2676d7;
+  --sys-blue-deep: #1c5fc4;
+
+  /* The wordmark and the outline button take the DEEP end, not the mid tone:
+     #3d8ef0 is a UI-chrome blue that washes out badly at 47vh of cap height
+     and fails contrast as a hairline outline. */
+  --blue: var(--sys-blue-deep);
+  --blue-btn: var(--sys-blue-deep);
+  --blue-pill: var(--sys-blue-deep);
+
+  /* ---- Aqua glossy pill — the wet-glass ramp, top to bottom ----
+     The break at --aqua-break is the whole trick: an abrupt step from the icy
+     upper half into saturated blue is what reads as light refracting through a
+     curved gel, where a smooth blend just reads as a plain gradient.
+
+     These four stops are the ONLY thing that pitches the gel to a colour —
+     buttons.css consumes them and never names a blue of its own, which is why
+     moving the page from electric blue to system blue is four values here and
+     no change at all to the gradient machinery. */
+  --aqua-top: #f2f8ff;     /* pale icy blue-white at the very top */
+  --aqua-mid: #c9e0fc;     /* still icy, just before the break */
+  --aqua-break: #2676d7;   /* the step into saturated blue */
+  --aqua-bottom: #1c5fc4;  /* deeper blue at the bottom edge */
+  --aqua-edge: rgba(18, 60, 140, 0.55);
+  --aqua-cast: rgba(20, 60, 130, 0.28);
+
+  /* The same ramp with the colour taken out — the white Aqua button, which is
+     how Mac OS X expressed a NON-default action. Hierarchy moves to colour,
+     so the secondary keeps the material instead of giving it up. */
+  --gel-top: #ffffff;
+  --gel-mid: #f4f4f4;
+  --gel-break: #dedede;
+  --gel-bottom: #bcbcbc;
+  --gel-edge: rgba(0, 0, 0, 0.34);
+  --gel-cast: rgba(0, 0, 0, 0.18);
+
+  /* Accent — hand rim-light (warm gold, primary accent) */
+  --accent: #cf9c3d;
+  --accent-deep: #a97c25;
+  --accent-alt: #b93b2b;   /* marquee red, held in reserve */
+
+  /* Focus. Aqua's focused control wore a soft blue halo; the ring inside it is
+     ours, because a glow alone does not clear the contrast bar for a visible
+     focus indicator. */
+  --apple-blue: #005bb8;
+  --focus-glow: rgba(61, 142, 240, 0.55);
+
+  /* ---- Type ----
+     Macs stop at -apple-system and resolve to the native system face, never
+     downloading anything. Everyone else falls past the two Apple keywords onto
+     the self-hosted face, so a Windows or Linux visitor gets the early-2000s
+     humanist texture rather than a generic system sans. */
+  --sans: -apple-system, BlinkMacSystemFont, 'Recee UI', 'Lucida Grande',
+    'Lucida Sans Unicode', sans-serif;
+  --mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, 'Roboto Mono',
+    monospace;
+  /* Rhythm. The page margin is much tighter than it was: the reference sets
+     the logo, the corner brackets and the footer all at ~2.9% of the width,
+     where 5vw put them at 67px on a 1344 frame against the reference's 38. */
+  --nav-h: clamp(56px, 8vh, 84px);
+  --page-x: clamp(12px, 2.1vw, 34px);
+  --max-w: 1240px;
+
+  /* ONE gutter for the entire composition — around the toolbar, between the
+     two columns, and between every bento cell. The mosaic only reads as a
+     mosaic if the rhythm between panels is uniform, so this deliberately is
+     not a scale: it is a single number used everywhere. */
+  --gap: clamp(10px, 1.5vh, 20px);
+
+  /* Vertical scale. Every gap in the hero comes from this ladder so the
+     rhythm is a system rather than a set of independently-tuned clamps —
+     which is how the spacing drifted after the mid-hero CTA was removed. */
+  --space-1: clamp(6px, 0.8vh, 10px);
+  --space-2: clamp(10px, 1.4vh, 16px);
+  --space-3: clamp(18px, 2.6vh, 32px);
+  --space-4: clamp(28px, 4.2vh, 52px);
+  --space-5: clamp(40px, 6vh, 76px);
+}
