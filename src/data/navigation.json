@@ -1,0 +1,49 @@
+{
+  "headerNavigation": [
+    {
+      "title": "work",
+      "url": "#work"
+    },
+    {
+      "title": "about",
+      "url": "#about"
+    },
+    {
+      "title": "contact",
+      "url": "#contact"
+    }
+  ],
+  "footerCopyright": "©Podium 2026",
+  "footerEmail": "",
+  "contactAddress": "<p><strong>Studio address</strong><br>3081 Ontario St E, <br>Montreal, QC H1W 1N7</p>",
+  "contactEmails": [
+    {
+      "title": "Commercial",
+      "url": "Renaud@podium.global"
+    },
+    {
+      "title": "Film",
+      "url": "Philip@podium.global"
+    },
+    {
+      "title": "General",
+      "url": "Jasmine@podium.global"
+    },
+    {
+      "title": "Invoicing",
+      "url": "Accounting@podium.global"
+    }
+  ],
+  "contactSocialInstagram": {
+    "title": "Instagram",
+    "url": "https://www.instagram.com/podium.global/"
+  },
+  "contactSocialVimeo": {
+    "title": "Vimeo",
+    "url": "https://vimeo.com/podiumglobal"
+  },
+  "contactSocialLinkedin": {
+    "title": "",
+    "url": ""
+  }
+}

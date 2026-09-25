@@ -1,0 +1,23 @@
+# Dependencies / build output
+node_modules/
+.next/
+out/
+tsconfig.tsbuildinfo
+*.log
+.DS_Store
+.env*.local
+
+# Mirrored site media — 554 MB, and every byte of it is a copy of someone
+# else's CDN. Regenerate with `node tools/mirror-assets.mjs`, which reads the
+# URLs out of reference/payload (kept, 320 KB).
+public/media/
+
+# Reference captures — 245 MB of screenshots used to verify the rebuild.
+# Regenerate with `node tools/capture.mjs` / `node tools/compare.mjs`.
+# reference/payload and reference/brand are NOT ignored: the tools read the
+# payload to build the content layer, and brand holds the wordmark artwork
+# that tools/trace-wordmark.mjs vectorises.
+reference/live/
+reference/check/
+reference/local/
+reference/diff/

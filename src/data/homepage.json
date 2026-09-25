@@ -1,0 +1,310 @@
+{
+  "seo": {
+    "title": "Podium | Creative Studio & Video Production for Sports",
+    "description": "Creative direction, film production and photography for sports brands worldwide.",
+    "image": {
+      "url": "/media/datocms/1776225176-podium_socials2.png",
+      "alt": null,
+      "width": 1200,
+      "height": 627,
+      "mimeType": "image/png"
+    },
+    "twitterCard": "summary_large_image"
+  },
+  "homeHeroTagline": "<p><span></span><span>We offer creative direction<br>&amp;&nbsp;</span><span>production for athleticism.</span></p>",
+  "homeHeroHint": "<p><span></span><span></span><span>Scroll Down</span></p>",
+  "homeMosaicMedias": [
+    {
+      "url": "/media/datocms/1775439125-80-winters-poster.mp4",
+      "alt": "Skier carving through deep powder in the Auclair 80 Winters film — celebrating 80 years of winter heritage",
+      "width": 1280,
+      "height": 720,
+      "mimeType": "video/mp4",
+      "video": {
+        "thumbnailUrl": "/media/mux/YFqUSQQ9HwFk00LFfiT3D2y1JMC4mzFBD-thumbnail.jpg",
+        "mp4Url": "/media/mux/YFqUSQQ9HwFk00LFfiT3D2y1JMC4mzFBD-high.mp4"
+      }
+    },
+    {
+      "url": "/media/datocms/1776302059-puma-poster.mp4",
+      "alt": null,
+      "width": 320,
+      "height": 500,
+      "mimeType": "video/mp4",
+      "video": {
+        "thumbnailUrl": "/media/mux/JHKm3SZPbOk9lqXyayJW85ULP2BC015Qo-thumbnail.jpg",
+        "mp4Url": "/media/mux/JHKm3SZPbOk9lqXyayJW85ULP2BC015Qo-low.mp4"
+      }
+    },
+    {
+      "url": "/media/datocms/1775439136-milimani-poster.mp4",
+      "alt": "Trail runner navigating East African highlands — Salomon Milimani trail running film poster",
+      "width": 1280,
+      "height": 878,
+      "mimeType": "video/mp4",
+      "video": {
+        "thumbnailUrl": "/media/mux/51qqDDy8xLQ4IA95weUENp100WuHB4jUG-thumbnail.jpg",
+        "mp4Url": "/media/mux/51qqDDy8xLQ4IA95weUENp100WuHB4jUG-high.mp4"
+      }
+    },
+    {
+      "url": "/media/datocms/1776196504-4-hero.webp",
+      "alt": "A girl holding a wheel overhead walking in a golden grain field under a pale sky, with faint curved tracks in the middle and a dark treeline along the horizon.",
+      "width": 2880,
+      "height": 2160,
+      "mimeType": "image/webp",
+      "video": null
+    },
+    {
+      "url": "/media/datocms/1775100803-ws-3.webp",
+      "alt": "Close-up face and neck portrait of runner, Western States endurance photography",
+      "width": 1920,
+      "height": 1536,
+      "mimeType": "image/webp",
+      "video": null
+    },
+    {
+      "url": "/media/datocms/1776302059-puma-poster.mp4",
+      "alt": null,
+      "width": 320,
+      "height": 500,
+      "mimeType": "video/mp4",
+      "video": {
+        "thumbnailUrl": "/media/mux/JHKm3SZPbOk9lqXyayJW85ULP2BC015Qo-thumbnail.jpg",
+        "mp4Url": "/media/mux/JHKm3SZPbOk9lqXyayJW85ULP2BC015Qo-low.mp4"
+      }
+    },
+    {
+      "url": "/media/datocms/1776302059-puma-poster.mp4",
+      "alt": null,
+      "width": 320,
+      "height": 500,
+      "mimeType": "video/mp4",
+      "video": {
+        "thumbnailUrl": "/media/mux/JHKm3SZPbOk9lqXyayJW85ULP2BC015Qo-thumbnail.jpg",
+        "mp4Url": "/media/mux/JHKm3SZPbOk9lqXyayJW85ULP2BC015Qo-low.mp4"
+      }
+    }
+  ],
+  "homeProjectItems": [
+    {
+      "id": "HOYYSmUNRiit23KLPx0Qkg"
+    },
+    {
+      "id": "ZIFkeYncT62mYW8Q-THRug"
+    },
+    {
+      "id": "Cdzs4p-XQbGAeD4ygxGLvw"
+    },
+    {
+      "id": "PXi6fa0MQQ-2ttBWUCf0WA"
+    },
+    {
+      "id": "W-jSD6mPSoSEqhj8IpkJUQ"
+    },
+    {
+      "id": "eml-fA7MQg6xadlMkNi-ZA"
+    },
+    {
+      "id": "HyZ6gv8ZQX-uFURHbhp8Gg"
+    },
+    {
+      "id": "AO2ScDfVTJu9k9kufF-h7w"
+    }
+  ],
+  "homeWorldwideOverline": "Available Worldwide",
+  "homeWorldwideTitle": "<p><span>We</span><span> </span><span>help</span><span> </span><span>sports</span><span> </span><span>brands</span><span> </span><span>tell</span><span>&nbsp;</span><span>stories</span><span> </span><span>through</span><span> </span><span>fieldwork,</span><span> </span><span>narrative,</span><span> </span><span>and</span><span> <span>creative</span> <span>research</span></span><span>, with</span><span>&nbsp;</span><span>deep</span><span> </span><span>production</span><span> </span><span>expertise.</span></p>",
+  "homeWorldwideCarouselTitle": "Behind the scenes",
+  "homeWorldwideCarousel": [
+    {
+      "id": "Cyn8REbtRyCTTeikkixd9Q",
+      "text": "",
+      "content": "",
+      "media": {
+        "mimeType": "image/jpeg",
+        "responsiveImage": {
+          "src": "/media/datocms/1776216834-img_6352.jpeg",
+          "srcSet": "/media/datocms/1776216834-img_6352.jpeg",
+          "width": 800,
+          "height": 1066,
+          "alt": null,
+          "base64": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAgLERQTDhgQFRkWERcSDQ0YFx8ZGCIVIiEaKysjGh0oHRUWJDUlKC0vMjIyGSI4PTcwPCsxMi8BCgsLDg0OGg0OFS8cFhwvNS8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vL//AABEIABgAEgMBIgACEQEDEQH/xAAaAAEAAgMBAAAAAAAAAAAAAAAAAgcEBQYD/8QAIBAAAgICAgIDAAAAAAAAAAAAAAECBAMFEkEUMhEiI//EABUBAQEAAAAAAAAAAAAAAAAAAAQD/8QAGxEAAgEFAAAAAAAAAAAAAAAAAAIhAQMSEzH/2gAMAwEAAhEDEQA/AJPXZ/HZm6nya2NqJr7G7yPE1BHhrN3Ydjg49h7byWdIOhdq78+oJqzmaX5gZsD4FfV7U4p8yes20I7WMGuwAKUkU3CwY3sXBfXoACiJ/9k=",
+          "sizes": "(max-width: 800px) 100vw, 800px"
+        },
+        "video": null
+      }
+    },
+    {
+      "id": "HZyWRgKDQE-N7fI24waFsQ",
+      "text": "",
+      "content": "",
+      "media": {
+        "mimeType": "video/mp4",
+        "responsiveImage": null,
+        "video": {
+          "muxPlaybackId": "Ezq8ZkDg1epM5100nhYtgE7Qsx02Un02Y00e",
+          "thumbnailUrl": "/media/mux/Ezq8ZkDg1epM5100nhYtgE7Qsx02Un02Y00e-thumbnail.jpg",
+          "mp4Url": "/media/mux/Ezq8ZkDg1epM5100nhYtgE7Qsx02Un02Y00e-medium.mp4"
+        }
+      }
+    },
+    {
+      "id": "cxOMv5JrQqG-NgND-jx9XQ",
+      "text": "",
+      "content": "",
+      "media": {
+        "mimeType": "image/jpeg",
+        "responsiveImage": {
+          "src": "/media/datocms/1776219966-dsc09641.jpg",
+          "srcSet": "/media/datocms/1776219966-dsc09641.jpg",
+          "width": 800,
+          "height": 1066,
+          "alt": null,
+          "base64": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAgLFQoXDhoVFRkXGR0RFRUVFxUdHSIVIiEdHysjGh0oHRUWJDUlKC0vMjIyGSI4PTcwPCsxMi8BCgsLDg0OHBAQHC8cFhw1Ly8vLy8vLy8vLy8vLy8vLy8vLy81Ly8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vL//AABEIABgAEgMBIgACEQEDEQH/xAAZAAADAAMAAAAAAAAAAAAAAAAABQYBAwT/xAAgEAACAQQCAwEAAAAAAAAAAAAAAQIDBAURIVITFiMS/8QAFQEBAQAAAAAAAAAAAAAAAAAAAwT/xAAZEQADAQEBAAAAAAAAAAAAAAAAAQIREiH/2gAMAwEAAhEDEQA/AI/GqhSmtMdzjQnS3JkfhZN1F5JFVcW6rWfylzonqZ5HlPTV+LLugEzxl3t8yME2SL6dVng5PmLK/BYKpUSjNgAF3XIiS0f+qx6oAAj7oTEf/9k=",
+          "sizes": "(max-width: 800px) 100vw, 800px"
+        },
+        "video": null
+      }
+    },
+    {
+      "id": "INYYd_bzTU6j94cBK2a6dQ",
+      "text": "",
+      "content": "",
+      "media": {
+        "mimeType": "video/mp4",
+        "responsiveImage": null,
+        "video": {
+          "muxPlaybackId": "s5rSMY9C00vXcD9xN02SdkqrHvKcZPDbtT",
+          "thumbnailUrl": "/media/mux/s5rSMY9C00vXcD9xN02SdkqrHvKcZPDbtT-thumbnail.jpg",
+          "mp4Url": "/media/mux/s5rSMY9C00vXcD9xN02SdkqrHvKcZPDbtT-medium.mp4"
+        }
+      }
+    },
+    {
+      "id": "D-5AT63OTYqhpGPdD39DnA",
+      "text": "",
+      "content": "",
+      "media": {
+        "mimeType": "video/mp4",
+        "responsiveImage": null,
+        "video": {
+          "muxPlaybackId": "cy8ig01j4TYOCY2knVnRlF36fi01g701JbN",
+          "thumbnailUrl": "/media/mux/cy8ig01j4TYOCY2knVnRlF36fi01g701JbN-thumbnail.jpg",
+          "mp4Url": "/media/mux/cy8ig01j4TYOCY2knVnRlF36fi01g701JbN-medium.mp4"
+        }
+      }
+    },
+    {
+      "id": "P0Mq-fh9QNuHx2u168QNlA",
+      "text": "",
+      "content": "",
+      "media": {
+        "mimeType": "video/mp4",
+        "responsiveImage": null,
+        "video": {
+          "muxPlaybackId": "RYQvEV6fgtLaY8XYSuGLIGG0100SXM00K3y",
+          "thumbnailUrl": "/media/mux/RYQvEV6fgtLaY8XYSuGLIGG0100SXM00K3y-thumbnail.jpg",
+          "mp4Url": "/media/mux/RYQvEV6fgtLaY8XYSuGLIGG0100SXM00K3y-medium.mp4"
+        }
+      }
+    },
+    {
+      "id": "J3ZcHGkGRqGZgAK55aq4GQ",
+      "text": "",
+      "content": "",
+      "media": {
+        "mimeType": "video/mp4",
+        "responsiveImage": null,
+        "video": {
+          "muxPlaybackId": "sPMPHJ7A2NZD6YEtr2oRrCee2DIBL1tP",
+          "thumbnailUrl": "/media/mux/sPMPHJ7A2NZD6YEtr2oRrCee2DIBL1tP-thumbnail.jpg",
+          "mp4Url": "/media/mux/sPMPHJ7A2NZD6YEtr2oRrCee2DIBL1tP-medium.mp4"
+        }
+      }
+    },
+    {
+      "id": "dt4NrTIATE2qUVdb9OD5rg",
+      "text": "",
+      "content": "",
+      "media": {
+        "mimeType": "video/mp4",
+        "responsiveImage": null,
+        "video": {
+          "muxPlaybackId": "QjVLMJ01QuDiYPwNtZ015qKhd3ro7P00DXB",
+          "thumbnailUrl": "/media/mux/QjVLMJ01QuDiYPwNtZ015qKhd3ro7P00DXB-thumbnail.jpg",
+          "mp4Url": "/media/mux/QjVLMJ01QuDiYPwNtZ015qKhd3ro7P00DXB-medium.mp4"
+        }
+      }
+    },
+    {
+      "id": "FtSs88IMTpeHeOnCRl1QUw",
+      "text": "",
+      "content": "",
+      "media": {
+        "mimeType": "video/mp4",
+        "responsiveImage": null,
+        "video": {
+          "muxPlaybackId": "6004qT7Fk7XkBJZwuSbvfZbB8tA9jKU00R",
+          "thumbnailUrl": "/media/mux/6004qT7Fk7XkBJZwuSbvfZbB8tA9jKU00R-thumbnail.jpg",
+          "mp4Url": "/media/mux/6004qT7Fk7XkBJZwuSbvfZbB8tA9jKU00R-medium.mp4"
+        }
+      }
+    },
+    {
+      "id": "SVf2HaPOQJeitstrMJ9tCA",
+      "text": "",
+      "content": "",
+      "media": {
+        "mimeType": "video/mp4",
+        "responsiveImage": null,
+        "video": {
+          "muxPlaybackId": "AxQ00RHCjQl3prRak10201L14SXK2atlkoZ",
+          "thumbnailUrl": "/media/mux/AxQ00RHCjQl3prRak10201L14SXK2atlkoZ-thumbnail.jpg",
+          "mp4Url": "/media/mux/AxQ00RHCjQl3prRak10201L14SXK2atlkoZ-medium.mp4"
+        }
+      }
+    },
+    {
+      "id": "SQ1iBsB4RimKVlhkyuXQ0w",
+      "text": "",
+      "content": "",
+      "media": {
+        "mimeType": "video/mp4",
+        "responsiveImage": null,
+        "video": {
+          "muxPlaybackId": "vFQzwsDyHxVBB01q54zOUqxcMU6qiuwys",
+          "thumbnailUrl": "/media/mux/vFQzwsDyHxVBB01q54zOUqxcMU6qiuwys-thumbnail.jpg",
+          "mp4Url": "/media/mux/vFQzwsDyHxVBB01q54zOUqxcMU6qiuwys-medium.mp4"
+        }
+      }
+    },
+    {
+      "id": "TuBbRKF7Sqi-2B6jAgVheg",
+      "text": "",
+      "content": "",
+      "media": {
+        "mimeType": "image/jpeg",
+        "responsiveImage": {
+          "src": "/media/datocms/1776216821-f96fbf53-79e2-4ff6-a363-091fcbefa436.jpg",
+          "srcSet": "/media/datocms/1776216821-f96fbf53-79e2-4ff6-a363-091fcbefa436.jpg",
+          "width": 800,
+          "height": 1200,
+          "alt": null,
+          "base64": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAgLEhYLDiQPDQ0TEBMVFg0YFxUZGBYTFhUmHysjGikoHRUiJDUlKC0vMjIyGSI4PTcwPCsxMi8BCgsLDg0OEBANHDscFhwvLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vL//AABEIABkAEAMBIgACEQEDEQH/xAAXAAADAQAAAAAAAAAAAAAAAAACAwQF/8QAHxAAAQQBBQEAAAAAAAAAAAAAAQACAwQhERMjMjMF/8QAFwEAAwEAAAAAAAAAAAAAAAAAAgMEAf/EABkRAAIDAQAAAAAAAAAAAAAAAAABBBITAv/aAAwDAQACEQMRAD8ADljbkJVoSPhwFf8ASla0gNCdWr71cEtRqezXDQU9Zskg1Wgzbr1xhTu7hMt+ASM+Sm7P/9k=",
+          "sizes": "(max-width: 800px) 100vw, 800px"
+        },
+        "video": null
+      }
+    }
+  ],
+  "homeWhatwedoTitle": "We've worked with sports brands and athletes worldwide.",
+  "homeWhatwedoServiceTitle": "Services",
+  "homeWhatwedoServiceText": "<ul>\n<li><span></span><span></span><span>Creative Direction</span></li>\n<li><span>Video Production</span></li>\n<li><span>Post-Production</span><span></span></li>\n<li><span>Photography</span></li>\n<li><span>VFX</span></li>\n</ul>",
+  "homeWhatwedoClientTitle": "Clients",
+  "homeWhatwedoClientContent": "<ul>\n<li><span></span><span></span><span>Salomon</span></li>\n<li><span>ON Running</span></li>\n<li><span>Puma</span></li>\n<li><span>Nike</span></li>\n<li><span>The North Face </span></li>\n<li><span>Saucony</span></li>\n<li><span>Garmin </span></li>\n<li><span>Ciele</span></li>\n<li><span>Shokz</span></li>\n<li><span>Auclair </span></li>\n<li><span>Altitude Sports </span></li>\n<li><span>Le Braquet</span></li>\n</ul>",
+  "homeWhatwedoAthleteTitle": "Athletes we’ve worked with",
+  "homeWhatwedoAthleteContent": "<p><span></span><span></span><span>Mathieu Blanchard, Conner Mantz, Helen Obiri, Tom Evans, Jay Du Temple, Rener Gracie, Marianne Hogan, Shen Jiasheng, Katie Schide, Lucy Bartholomew, Dan Green, Sara Alonso, Dakota Popehn, Adam Peterman, Germain Grangier, Blandine L&rsquo;hirondel, Ruy Hueda, Arthur Joyeux-Bouillon, Jisub Kim, Yuri Yoshizumi, Rosanna Buchhauer, Jean-Philippe Thibodeau and many more</span></p>",
+  "homeFooterTextLeft": "Not the finish line.",
+  "homeFooterTagline": "<p>Let's build your vision<br><a href=\"#contact\">Work with us</a></p>",
+  "homeFooterTextRight": "It's step one."
+}

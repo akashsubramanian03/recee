@@ -1,0 +1,603 @@
+@import 'tailwindcss';
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Fonts — mirrored from the original /public/fonts.
+   ───────────────────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: Futura;
+  src: url(/fonts/futura-book.woff2) format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Futura;
+  src: url(/fonts/futura-medium.woff2) format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Futura;
+  src: url(/fonts/futura-bold.woff2) format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Univers Condensed';
+  src: url(/fonts/univers-condensed.woff2) format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Univers Condensed';
+  src: url(/fonts/univers-condensed-bold.woff2) format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Design tokens. Values transcribed verbatim from the production stylesheet.
+   Base scale assumes html { font-size: 62.5% } => 1rem = 10px.
+   ───────────────────────────────────────────────────────────────────────── */
+@theme {
+  --font-futura: 'Futura', system-ui, sans-serif;
+  --font-univers: 'Univers Condensed', 'Arial Narrow', sans-serif;
+
+  --text-sm: 1.2rem;
+
+  --grid-cols: 5;
+
+  --spacing-section: clamp(6.4rem, 4.15rem + 5.72vw, 12.8rem);
+  --spacing-grid-margin: clamp(1.2rem, 0.78rem + 1.07vw, 2.4rem);
+  --spacing-grid-gutter: clamp(1.6rem, 1.32rem + 0.71vw, 2.4rem);
+  --spacing-header-logo-w: clamp(14rem, 11.19rem + 7.15vw, 22rem);
+  --spacing-header-nav-gap: clamp(2.4rem, 2.12rem + 0.71vw, 3.2rem);
+  --spacing-header-menu-icon: 2.7rem;
+  --spacing-header-pad-top: clamp(1.2rem, 0.78rem + 1.07vw, 2.4rem);
+  --spacing-footer-top: clamp(12.8rem, 17.12rem - 2.86vw, 16rem);
+  --spacing-footer-gap: clamp(11.2rem, 14.98rem - 2.5vw, 14rem);
+  --spacing-ww-carousel-top: clamp(6rem, 3.01rem + 7.6vw, 14.5rem);
+  --spacing-ww-carousel-bottom: clamp(8rem, 6.45rem + 3.93vw, 12.4rem);
+
+  --spacing-gap-xs: 0.4rem;
+  --spacing-gap-sm: 0.8rem;
+  --spacing-gap-md: 1.6rem;
+  --spacing-gap-lg: 2.4rem;
+  --spacing-gap-xl: 4.8rem;
+
+  --spacing-overlay-inset: 2.4rem;
+  --spacing-overlay-inset-sm: 1.2rem;
+  --spacing-card-icon-inset: 2.5rem;
+  --spacing-card-label-right: 1.4rem;
+  --spacing-card-label-bottom: 2.8rem;
+  --spacing-card-text-px: 1rem;
+  --spacing-icon-sm: 2.4rem;
+  --spacing-perspective: 220rem;
+  --spacing-block-py: 3.2rem;
+  --spacing-block-mt: 1rem;
+  --spacing-list-indent: 2rem;
+  --spacing-hero-bottom: 2.5rem;
+  --spacing-hero-meta-mt: 1.5rem;
+  --spacing-footer-maxh-mobile: 33rem;
+  --spacing-footer-maxh-desktop: 40rem;
+  --spacing-quote-author-w: 14rem;
+  --spacing-controls-px: 2.4rem;
+  --spacing-controls-max-w: 154rem;
+  --spacing-icon-play: 1.4rem;
+  --spacing-icon-volume: 3.6rem;
+
+  --spacing-whatwedo-top: clamp(4rem, 1.05rem + 7.51vw, 12.4rem);
+  --spacing-whatwedo-box-p: clamp(4rem, 3.72rem + 0.71vw, 4.8rem);
+  --spacing-whatwedo-box-gap: 1.6rem;
+
+  --spacing-grid-drift: 20rem;
+
+  --spacing-project-list-top: 11.6rem;
+  --spacing-project-list-bottom: 12.4rem;
+  --spacing-project-list-row: 6.8rem;
+  --spacing-project-list-scroll-pb: clamp(6rem, 5.05rem + 2.41vw, 8.7rem);
+  --spacing-project-list-panel-bottom-mobile: clamp(3.2rem, 2.78rem + 1.07vw, 4.4rem);
+  --spacing-project-list-gradient-h: clamp(26rem, 22.49rem + 8.94vw, 36rem);
+  --spacing-project-list-poster-top: 17.1rem;
+  --spacing-project-list-poster-inset: 0.3rem;
+
+  --color-whatwedo-service: #fdf7f7;
+  --color-whatwedo-client: #ddd;
+  --color-whatwedo-athlete: #cacaca;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 12-column grid from the md breakpoint up. */
+@media (min-width: 768px) {
+  :root {
+    --grid-cols: 12;
+  }
+}
+
+/*
+ * Above the 1512px design width every token becomes fluid:
+ * calc(100vw / 151.2 * X) equals exactly X rem at 1512px and scales linearly past it.
+ */
+@media (min-width: 1512px) {
+  :root {
+    --spacing-section: calc(100vw / 151.2 * 12.8);
+    --spacing-grid-margin: calc(100vw / 151.2 * 2.4);
+    --spacing-grid-gutter: calc(100vw / 151.2 * 2.4);
+    --spacing-footer-top: calc(100vw / 151.2 * 12.8);
+    --spacing-footer-gap: calc(100vw / 151.2 * 11.2);
+    --spacing-ww-carousel-top: calc(100vw / 151.2 * 14.5);
+    --spacing-ww-carousel-bottom: calc(100vw / 151.2 * 12.4);
+    --spacing-header-logo-w: min(calc(100vw / 151.2 * 22), 46rem);
+    --spacing-header-nav-gap: calc(100vw / 151.2 * 3.2);
+    --spacing-header-menu-icon: calc(100vw / 151.2 * 2.7);
+    --spacing-gap-xs: calc(100vw / 151.2 * 0.4);
+    --spacing-gap-sm: calc(100vw / 151.2 * 0.8);
+    --spacing-gap-md: calc(100vw / 151.2 * 1.6);
+    --spacing-gap-lg: calc(100vw / 151.2 * 2.4);
+    --spacing-gap-xl: calc(100vw / 151.2 * 4.8);
+    --spacing-overlay-inset: calc(100vw / 151.2 * 2.4);
+    --spacing-overlay-inset-sm: calc(100vw / 151.2 * 1.2);
+    --spacing-card-icon-inset: calc(100vw / 151.2 * 2.5);
+    --spacing-card-label-right: calc(100vw / 151.2 * 1.4);
+    --spacing-card-label-bottom: calc(100vw / 151.2 * 2.8);
+    --spacing-card-text-px: calc(100vw / 151.2 * 1);
+    --spacing-icon-sm: calc(100vw / 151.2 * 2.4);
+    --spacing-perspective: calc(100vw / 151.2 * 220);
+    --spacing-block-py: calc(100vw / 151.2 * 3.2);
+    --spacing-block-mt: calc(100vw / 151.2 * 1);
+    --spacing-list-indent: calc(100vw / 151.2 * 2);
+    --spacing-hero-bottom: calc(100vw / 151.2 * 2.5);
+    --spacing-hero-meta-mt: calc(100vw / 151.2 * 1.5);
+    --spacing-footer-maxh-mobile: calc(100vw / 151.2 * 33);
+    --spacing-footer-maxh-desktop: calc(100vw / 151.2 * 40);
+    --spacing-quote-author-w: calc(100vw / 151.2 * 14);
+    --spacing-controls-px: calc(100vw / 151.2 * 2.4);
+    --spacing-controls-max-w: calc(100vw / 151.2 * 154);
+    --spacing-icon-play: calc(100vw / 151.2 * 1.4);
+    --spacing-icon-volume: calc(100vw / 151.2 * 3.6);
+    --spacing-whatwedo-top: calc(100vw / 151.2 * 12.4);
+    --spacing-whatwedo-box-p: calc(100vw / 151.2 * 4.8);
+    --spacing-whatwedo-box-gap: calc(100vw / 151.2 * 1.6);
+    --spacing-grid-drift: calc(100vw / 151.2 * 20);
+    --spacing-project-list-top: calc(100vw / 151.2 * 11.6);
+    --spacing-project-list-bottom: calc(100vw / 151.2 * 12.4);
+    --spacing-project-list-row: calc(100vw / 151.2 * 6.8);
+    --spacing-project-list-scroll-pb: calc(100vw / 151.2 * 8.7);
+    --spacing-project-list-panel-bottom-mobile: calc(100vw / 151.2 * 4.4);
+    --spacing-project-list-gradient-h: calc(100vw / 151.2 * 36);
+    --spacing-project-list-poster-top: calc(100vw / 151.2 * 17.1);
+    --spacing-project-list-poster-inset: calc(100vw / 151.2 * 0.3);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Base
+   ───────────────────────────────────────────────────────────────────────── */
+html {
+  font-size: 62.5%; /* 1rem = 10px */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/*
+ * Black on purpose. The hero's "white page" is painted by the WebGL sheet, and the
+ * PODIUM mark punched out of it reveals this black underneath — that is why the mark
+ * reads as solid black before the mosaic fades up behind it.
+ *
+ * Note this rule is unlayered, so it beats Tailwind's layered `bg-*` utilities. Set
+ * the page colour here, not with a class on <body>.
+ */
+body {
+  background-color: #000;
+  color: #000;
+  font-family: var(--font-futura);
+  overscroll-behavior: none;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Typography utilities.
+   Each carries a fixed rem size plus a vw override that takes over at 1512px —
+   that is how the original keeps type locked to the 1512px design proportions.
+   ───────────────────────────────────────────────────────────────────────── */
+@utility text-display {
+  font-family: var(--font-futura);
+  text-transform: uppercase;
+  font-size: clamp(6.4rem, 4.71rem + 4.29vw, 11.2rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.0021em;
+  @media (min-width: 1512px) {
+    font-size: 7.40741vw;
+  }
+}
+
+@utility text-heading-xl {
+  font-family: var(--font-futura);
+  text-transform: uppercase;
+  font-size: clamp(3.2rem, 2.08rem + 2.86vw, 6.4rem);
+  font-weight: 700;
+  line-height: 0.9;
+  @media (min-width: 1512px) {
+    font-size: 4.2328vw;
+  }
+}
+
+@utility text-footer-tagline {
+  font-family: var(--font-futura);
+  text-transform: uppercase;
+  font-size: clamp(3.2rem, 2.36rem + 2.14vw, 5.6rem);
+  font-weight: 700;
+  line-height: 1;
+  @media (min-width: 1512px) {
+    font-size: 3.7037vw;
+  }
+}
+
+@utility text-heading-lg {
+  font-family: var(--font-futura);
+  text-transform: uppercase;
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1;
+  @media (min-width: 1512px) {
+    font-size: 1.5873vw;
+  }
+}
+
+@utility text-heading-md {
+  font-family: var(--font-futura);
+  text-transform: uppercase;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  @media (min-width: 1512px) {
+    font-size: 1.32275vw;
+  }
+}
+
+@utility text-menu {
+  font-family: var(--font-futura);
+  text-transform: uppercase;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  @media (min-width: 1512px) {
+    font-size: 1.32275vw;
+  }
+}
+
+@utility text-nav {
+  font-family: var(--font-futura);
+  text-transform: uppercase;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  @media (min-width: 1512px) {
+    font-size: 0.925926vw;
+  }
+}
+
+@utility text-whatwedo-item {
+  font-family: var(--font-futura);
+  text-transform: uppercase;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+  @media (min-width: 1512px) {
+    font-size: 1.0582vw;
+  }
+}
+
+@utility text-button {
+  font-family: var(--font-univers);
+  text-transform: uppercase;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+  @media (min-width: 1512px) {
+    font-size: 1.0582vw;
+  }
+}
+
+@utility text-body-md {
+  font-family: var(--font-futura);
+  font-size: 1.6rem;
+  font-weight: 400;
+  line-height: 1.5;
+  @media (min-width: 1512px) {
+    font-size: 1.0582vw;
+  }
+}
+
+@utility text-body-card {
+  font-family: var(--font-futura);
+  font-size: 1.4rem;
+  font-weight: 400;
+  line-height: 1.4;
+  @media (min-width: 1512px) {
+    font-size: 0.925926vw;
+  }
+}
+
+@utility text-body-sm {
+  font-family: var(--font-futura);
+  text-transform: uppercase;
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.5;
+  @media (min-width: 1512px) {
+    font-size: 0.793651vw;
+  }
+}
+
+@utility text-label {
+  font-family: var(--font-univers);
+  text-transform: uppercase;
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 1.1;
+  @media (min-width: 1512px) {
+    font-size: 0.793651vw;
+  }
+}
+
+@utility text-footer-side {
+  font-family: var(--font-univers);
+  text-transform: uppercase;
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 1.1;
+  @media (min-width: 1512px) {
+    font-size: 0.793651vw;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Layout utilities
+   ───────────────────────────────────────────────────────────────────────── */
+@utility grid-layout {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), 1fr);
+  column-gap: var(--spacing-grid-gutter);
+  padding-inline: var(--spacing-grid-margin);
+  width: 100%;
+}
+
+@utility contact-card-w {
+  width: 720px;
+  @media (min-width: 1512px) {
+    width: 43vw;
+  }
+}
+
+@utility contact-card-min-h {
+  min-height: 405px;
+  @media (min-width: 1512px) {
+    min-height: auto;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Project list / grid
+   ───────────────────────────────────────────────────────────────────────── */
+@utility project-list-panel {
+  padding-top: var(--spacing-project-list-top);
+  padding-bottom: var(--spacing-project-list-panel-bottom-mobile);
+  @media (min-width: 768px) {
+    padding-bottom: var(--spacing-project-list-bottom);
+  }
+}
+
+@utility project-list-scroll {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  scrollbar-width: none;
+  height: 100%;
+  max-height: 100%;
+  margin-inline: -4px;
+  padding-inline: 4px;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility project-list-scroll-content {
+  padding-bottom: var(--spacing-project-list-scroll-pb);
+}
+
+@utility project-list-row {
+  height: var(--spacing-project-list-row);
+}
+
+@utility project-list-row-content {
+  align-content: center;
+  align-items: center;
+  height: 100%;
+  transform: translateY(2px);
+}
+
+@utility project-list-text-mask {
+  overflow: hidden;
+}
+
+@utility project-list-hover-poster {
+  top: var(--spacing-project-list-poster-top);
+  transition: opacity 0.52s var(--ease-out-expo);
+}
+
+@utility project-list-hover-poster-frame {
+  aspect-ratio: 714 / 509;
+  margin-inline: var(--spacing-project-list-poster-inset);
+}
+
+@utility project-list-hover-poster-media {
+  transition:
+    opacity 0.58s var(--ease-out-expo),
+    transform 1.05s var(--ease-out-expo);
+  will-change: opacity, transform;
+}
+
+@utility project-list-hover-fade {
+  transition: opacity 0.48s var(--ease-out-expo);
+}
+
+@utility project-list-mobile-transition-poster {
+  opacity: 0;
+  transition: opacity 0.42s var(--ease-out-expo);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@utility project-list-mobile-transition-poster-frame {
+  aspect-ratio: 345 / 577;
+}
+
+@utility project-list-gradient-h {
+  height: var(--spacing-project-list-gradient-h);
+  background: linear-gradient(#0000 0%, #00000038 28%, #000000b3 68%, #000 100%);
+  @media (max-width: 767px) {
+    background: linear-gradient(
+      #0000 0%,
+      #0000001f 22%,
+      #00000094 58%,
+      #000000eb 84%,
+      #000 100%
+    );
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Behind-the-scenes carousel card flip
+   ───────────────────────────────────────────────────────────────────────── */
+.ww-card-flip {
+  transform-style: preserve-3d;
+}
+.ww-card:not([data-active]) .ww-card-flip {
+  animation: 0.5s cubic-bezier(0.33, 1, 0.68, 1) both wwFlipReverse;
+}
+.ww-card[data-active] .ww-card-flip {
+  will-change: transform;
+  animation-composition: replace, add;
+  animation:
+    0.5s cubic-bezier(0.33, 1, 0.68, 1) both wwFlipSkew,
+    0.5s cubic-bezier(0.83, 0, 0.17, 1) both wwFlipRotate;
+}
+.ww-card[data-active] .ww-card-front img,
+.ww-card[data-active] .ww-card-front video {
+  animation: 0.6s cubic-bezier(0.83, 0, 0.17, 1) wwFlipBrightness;
+}
+/* Suppress the flip until the card has been activated at least once. */
+.ww-card:not([data-has-flipped]) .ww-card-flip {
+  animation: none;
+}
+
+.whatwedo-content ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.whatwedo-content span:empty {
+  display: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Keyframes — ported verbatim
+   ───────────────────────────────────────────────────────────────────────── */
+@keyframes reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--spacing-gap-lg));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes wwFlipRotate {
+  0% {
+    transform: rotateY(0);
+  }
+  to {
+    transform: rotateY(180deg);
+  }
+}
+@keyframes wwFlipReverse {
+  0% {
+    transform: rotateY(180deg);
+  }
+  to {
+    transform: rotateY(0);
+  }
+}
+@keyframes wwFlipSkew {
+  0%,
+  to {
+    transform: skew(0deg);
+  }
+  50% {
+    transform: skew(-6deg);
+  }
+}
+@keyframes wwFlipBrightness {
+  0% {
+    filter: brightness();
+  }
+  50% {
+    filter: brightness(0.5);
+  }
+  to {
+    filter: brightness();
+  }
+}
+@keyframes noise {
+  0% {
+    background-position: 0 0;
+  }
+  33% {
+    background-position: 50px -10px;
+  }
+  67% {
+    background-position: -30px 40px;
+  }
+  to {
+    background-position: 25px -50px;
+  }
+}
+@keyframes project-hero-fixed {
+  to {
+    transform: translateY(100vh);
+  }
+}
+@keyframes project-footer-reveal {
+  0% {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translate(0);
+  }
+}
